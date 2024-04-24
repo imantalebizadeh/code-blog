@@ -3,6 +3,8 @@ import { Inter, Vazirmatn } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
+import { ThemeProvider } from "@/components/providers/theme-provider";
+
 import "@/styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -50,15 +52,17 @@ export default function RootLayout({
           vazirmatn.variable,
         )}
       >
-        <div className="flex min-h-screen w-full flex-col">
-          {/* <Navbar /> */}
+        <ThemeProvider attribute="class" defaultTheme="light">
+          <div className="flex min-h-screen w-full flex-col">
+            {/* <Navbar /> */}
 
-          <main className="container grid flex-1 grid-cols-1 grid-rows-1">
-            {children}
-          </main>
+            <main className="container grid flex-1 grid-cols-1 grid-rows-1">
+              {children}
+            </main>
 
-          {/* <Footer /> */}
-        </div>
+            {/* <Footer /> */}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
