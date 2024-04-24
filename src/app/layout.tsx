@@ -3,6 +3,7 @@ import { Inter, Vazirmatn } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
+import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 import "@/styles/globals.css";
@@ -54,7 +55,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="light">
           <div className="flex min-h-screen w-full flex-col">
-            {/* <Navbar /> */}
+            <Navbar />
 
             <main className="container grid flex-1 grid-cols-1 grid-rows-1">
               {children}
