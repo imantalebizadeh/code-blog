@@ -7,8 +7,10 @@
     "^next\/*(.*)$",
     "^react\/*(.*)$",
     "<THIRD_PARTY_MODULES>",
+    "^@/types\/(.*)$",
     "^@/server/(.*)$",
     "^@/lib/(.*)$",
+    "^@/hooks/(.*)$",
     "^@/components/(.*)$",
     "^@/app/(.*)$",
     "^./(.*)$"
