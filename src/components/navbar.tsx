@@ -43,7 +43,7 @@ export default async function Navbar() {
                 size={"icon"}
                 variant={"secondary"}
               >
-                <Link href={"/login"}>
+                <Link href={"/sign-in"}>
                   <Icon name={"UserRound"} size={20} />
                 </Link>
               </Button>
