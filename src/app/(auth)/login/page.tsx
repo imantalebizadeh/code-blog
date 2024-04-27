@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { githubSignIn } from "@/server/actions/auth";
+
 import LoginForm from "@/components/forms/login-form";
 import GithubLoginButton from "@/components/github-login-button";
 import {
@@ -23,7 +25,7 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent className="grid gap-4">
         {/* Github login */}
-        <form>
+        <form action={githubSignIn}>
           <GithubLoginButton />
         </form>
 
