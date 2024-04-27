@@ -1,12 +1,18 @@
 "use client";
 
+import { useAction } from "next-safe-action/hooks";
+
 import { useForm } from "react-hook-form";
 
+import Icon from "../common/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { signIn } from "@/server/actions/auth";
+
 import { signInSchema } from "@/lib/validations/auth";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,16 +25,14 @@ import {
 import { Input } from "@/components/ui/input";
 
 export default function LoginForm() {
+  const { execute, result, status } = useAction(signIn);
+
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
 
   const onSubmit = (values: z.infer<typeof signInSchema>) => {
-    // execute(values);
+    execute(values);
   };
 
   return (
@@ -62,10 +66,19 @@ export default function LoginForm() {
           )}
         />
 
-        {/* Server errors */}
+        {result.data?.error && (
+          <Alert variant={"destructive"} dir="rtl">
+            <Icon name="CircleAlert" size={20} />
+            <AlertDescription>{result.data.error}</AlertDescription>
+          </Alert>
+        )}
 
         <Button type="submit" className="w-full">
-          ورود
+          {status === "executing" ? (
+            <Icon name="LoaderCircle" size={20} className="animate-spin" />
+          ) : (
+            "ورود"
+          )}
         </Button>
       </form>
     </Form>
