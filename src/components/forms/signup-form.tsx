@@ -1,12 +1,18 @@
 "use client";
 
+import { useAction } from "next-safe-action/hooks";
+
 import { useForm } from "react-hook-form";
 
+import Icon from "../common/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { signUp } from "@/server/actions/auth";
+
 import { signUpSchema } from "@/lib/validations/auth";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,17 +25,14 @@ import {
 import { Input } from "@/components/ui/input";
 
 export default function SignUpForm() {
+  const { execute, result, status } = useAction(signUp);
+
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
   });
 
   const onSubmit = (values: z.infer<typeof signUpSchema>) => {
-    // execute(values);
+    execute(values);
   };
 
   return (
@@ -56,7 +59,7 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>ایمیل</FormLabel>
               <FormControl>
-                <Input autoComplete="email" {...field} />
+                <Input autoComplete="email" className="font-inter" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -77,14 +80,23 @@ export default function SignUpForm() {
           )}
         />
 
-        {/* Server errors */}
+        {result.data?.error && (
+          <Alert variant={"destructive"} dir="rtl">
+            <Icon name="CircleAlert" size={20} />
+            <AlertDescription>{result.data.error}</AlertDescription>
+          </Alert>
+        )}
 
         <Button
           type="submit"
           className="w-full"
           disabled={status === "executing"}
         >
-          ثبت نام
+          {status === "executing" ? (
+            <Icon name="LoaderCircle" size={20} className="animate-spin" />
+          ) : (
+            "ثبت نام"
+          )}
         </Button>
       </form>
     </Form>
