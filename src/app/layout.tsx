@@ -3,6 +3,7 @@ import { Inter, Vazirmatn } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
+import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
@@ -61,7 +62,7 @@ export default function RootLayout({
               {children}
             </main>
 
-            {/* <Footer /> */}
+            <Footer />
           </div>
         </ThemeProvider>
       </body>
