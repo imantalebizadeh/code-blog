@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import ToasterProvider from "@/components/providers/toaster-provider";
 
 import "@/styles/globals.css";
 
@@ -64,6 +65,8 @@ export default function RootLayout({
 
             <Footer />
           </div>
+
+          <ToasterProvider />
         </ThemeProvider>
       </body>
     </html>
