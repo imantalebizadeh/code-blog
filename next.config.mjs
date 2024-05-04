@@ -7,6 +7,17 @@ const jiti = createJiti(fileURLToPath(import.meta.url));
 jiti("./src/env");
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: "code-blog.storage.iran.liara.space",
+        protocol: "https",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
+};
 
 export default nextConfig;
