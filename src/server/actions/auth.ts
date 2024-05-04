@@ -2,7 +2,7 @@
 
 import { AuthError } from "next-auth";
 
-import { nextAuthSignIn, nextAuthSignOut } from "../auth";
+import { nextAuthSignIn } from "../auth";
 import prisma from "../db";
 import { hash } from "bcryptjs";
 
