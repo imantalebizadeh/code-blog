@@ -69,7 +69,7 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
             })}
           >
             <div className="flex flex-col items-center gap-3">
-              <Icon name="CloudUpload" size={50} />
+              <Icon name="ImageUp" size={50} />
               <p className="text-[13px] text-muted-foreground md:text-sm">
                 فرمت های png, jpg ,jpeg - حدااکثر حجم 1MB
               </p>
