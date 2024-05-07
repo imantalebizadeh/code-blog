@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
+import SessionProvider from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ToasterProvider from "@/components/providers/toaster-provider";
 
@@ -55,19 +56,21 @@ export default function RootLayout({
           vazirmatn.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <div className="flex min-h-screen w-full flex-col">
-            <Navbar />
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="light">
+            <div className="flex min-h-screen w-full flex-col">
+              <Navbar />
 
-            <main className="container grid flex-1 grid-cols-1 grid-rows-1">
-              {children}
-            </main>
+              <main className="container grid flex-1 grid-cols-1 grid-rows-1">
+                {children}
+              </main>
 
-            <Footer />
-          </div>
+              <Footer />
+            </div>
 
-          <ToasterProvider />
-        </ThemeProvider>
+            <ToasterProvider />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
