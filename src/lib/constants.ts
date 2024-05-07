@@ -49,3 +49,6 @@ export const transliterationMap: Record<string, string> = {
   ه: "h",
   ی: "y",
 };
+
+export const DEFAULT_SERVER_ERROR =
+  "خطایی در سمت سرور رخ داده است. لطفا مجددا تلاش کنید.";
