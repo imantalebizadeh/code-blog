@@ -60,7 +60,7 @@ export default function ProfileCard({ user }: { user: User }) {
   };
 
   return (
-    <div className="grid grid-cols-1 grid-rows-[7rem_3.5rem_3.5rem_auto] rounded-xl bg-primary-foreground">
+    <div className="grid grid-cols-1 grid-rows-[6rem_3.5rem_3.5rem_auto] rounded-xl bg-primary-foreground">
       <div className="col-start-1 col-end-2 row-start-1 row-end-3 rounded-t-xl bg-gradient-to-r from-[#fbe9d7] to-[#f6d5f7]" />
       <div className="col-start-1 col-end-2 row-start-2 row-end-4 flex justify-between px-4 md:px-6">
         <div className="relative">
