@@ -5,8 +5,22 @@ import type { User } from "@prisma/client";
 import { auth } from "@/server/auth";
 import { getUserByUsername } from "@/server/data/user";
 
+import PasswordEditForm from "@/components/forms/password-form";
+import ProfileForm from "@/components/forms/profile-form";
 import ProfileCard from "@/components/profile-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+export async function generateMetadata() {
+  const session = await auth();
+
+  if (!session?.user) notFound();
+
+  return {
+    title: {
+      absolute: `پروفایل - ${session.user.name}`,
+    },
+  };
+}
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -33,7 +47,21 @@ export default async function ProfilePage() {
         </TabsList>
         <TabsContent value="account">
           {/* Show user form here. */}
-          اطلاعات من
+          {/* اطلاعات من */}
+          <div className="grid grid-cols-1 grid-rows-[1fr_auto] gap-8 rounded-xl bg-primary-foreground p-6 md:grid-cols-2 md:grid-rows-1">
+            <section className="divide-y">
+              <h4 className="mb-4 scroll-m-20 text-xl font-semibold tracking-tight">
+                ویرایش اطلاعات
+              </h4>
+              <ProfileForm user={user} />
+            </section>
+            <section className="divide-y">
+              <h4 className="mb-4 scroll-m-20 text-xl font-semibold tracking-tight">
+                تغییر رمز عبور
+              </h4>
+              <PasswordEditForm className="pt-5" />
+            </section>
+          </div>
         </TabsContent>
         <TabsContent value="posts">
           {/* Show user's posts here. */}
