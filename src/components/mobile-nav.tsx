@@ -15,7 +15,7 @@ export default function MobileNav() {
       <SheetTrigger asChild>
         <Button
           type="button"
-          className="inline-flex rounded-full md:hidden"
+          className="inline-flex rounded-full md:hidden size-11"
           size={"icon"}
           variant={"secondary"}
         >
