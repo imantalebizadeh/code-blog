@@ -18,3 +18,26 @@ export const userSchema = z.object({
     ),
   bio: z.string().max(500, "بیوگرافی حدااکثر باید 500 کاراکتر باشد").optional(),
 });
+
+export const passwordFormSchema = z
+  .object({
+    currentPassword: z
+      .string({ required_error: "وارد کردن رمز عبور قبلی الزامی می باشد" })
+      .max(30, "رمز عبور حداکثر باید 30 کاراکتر باشد"),
+    newPassword: z
+      .string({ required_error: " وارد کردن رمز عبور جدید الزامی می باشد" })
+      .min(6, "رمز عبور حداقل باید 6 کاراکتر باشد")
+      .max(30, "رمز عبور حداکثر باید 30 کاراکتر باشد"),
+    confirmPassword: z
+      .string({ required_error: "وارد کردن تکرار رمز عبور الزامی می باشد" })
+      .max(30, "رمز عبور حداکثر باید 30 کاراکتر باشد"),
+  })
+  .refine(
+    (values) => {
+      return values.newPassword === values.confirmPassword;
+    },
+    {
+      message: "تکرار رمز عبور صحیح نمی باشد",
+      path: ["confirmPassword"],
+    },
+  );
