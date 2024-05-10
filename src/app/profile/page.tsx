@@ -59,7 +59,7 @@ export default async function ProfilePage() {
               <h4 className="mb-4 scroll-m-20 text-xl font-semibold tracking-tight">
                 تغییر رمز عبور
               </h4>
-              <PasswordEditForm className="pt-5" />
+              <PasswordEditForm user={user} className="pt-5" />
             </section>
           </div>
         </TabsContent>
