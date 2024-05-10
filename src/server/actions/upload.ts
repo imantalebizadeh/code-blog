@@ -29,7 +29,7 @@ export const uploadImage = async (formData: FormData) => {
         s3,
         new PutObjectCommand({
           Bucket: env.S3_BUCKET,
-          Key: `${session.user.username}-${file.name}`,
+          Key: `${session.user.id}-${file.name}`,
         }),
         {
           expiresIn: 60,
