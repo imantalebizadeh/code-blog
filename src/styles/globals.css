@@ -1,3 +1,5 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -117,4 +119,12 @@
       box-shadow: 0 2.5em 0 0;
     }
   }
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground) !important;
+  content: attr(data-placeholder);
+  float: right;
+  height: 0;
+  pointer-events: none;
 }
