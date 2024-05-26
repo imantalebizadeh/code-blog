@@ -73,6 +73,7 @@ export const editorExtensions: Extensions = [
     lowlight: createLowlight(all),
     HTMLAttributes: {
       dir: "ltr",
+      class: "dark:bg-secondary",
     },
   }),
   Link.configure({
