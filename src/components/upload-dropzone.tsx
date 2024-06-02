@@ -9,7 +9,7 @@ import Icon from "./common/icon";
 import { Button } from "./ui/button";
 
 type Props = {
-  onFileAccepted: (file: File) => void;
+  onFileAccepted: (file: File | null) => void;
 };
 
 export default function UploadDropzone({ onFileAccepted }: Props) {
@@ -47,20 +47,35 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
   return (
     <>
       {previewUrl ? (
-        <Image
-          src={previewUrl}
-          width={398}
-          height={398}
-          alt={""}
-          style={{ width: "auto", height: "auto" }}
-          className="aspect-square h-full w-full rounded-lg"
-        />
+        <div className="relative w-full max-w-full overflow-hidden rounded-md">
+          <Image
+            src={previewUrl}
+            width={398}
+            height={398}
+            alt={""}
+            style={{ width: "auto", height: "auto" }}
+            className="h-72 w-full rounded-md object-cover"
+          />
+
+          <Button
+            type="button"
+            size="icon"
+            variant="destructive"
+            className="absolute right-2 top-2 size-9 rounded-full"
+            onClick={() => {
+              setPreviewUrl(null);
+              onFileAccepted(null);
+            }}
+          >
+            <Icon name="Trash" size={20} />
+          </Button>
+        </div>
       ) : (
         <div className="space-y-3">
           <div
             {...getRootProps({
               className: cn(
-                "border-2 border-dashed p-8 flex justify-center items-center flex-col rounded-lg gap-8",
+                "border-2 border-dashed p-8 flex justify-center items-center flex-col rounded-md gap-8",
                 {
                   "border-destructive": errors.length > 0,
                   "bg-secondary": isDragActive,
