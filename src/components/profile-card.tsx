@@ -33,7 +33,7 @@ import {
 import UploadDropzone from "./upload-dropzone";
 
 export default function ProfileCard({ user }: { user: User }) {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined>(undefined);
   const [open, setOpen] = useState<boolean>(false);
 
   const { execute } = useAction(updateUserImage);
@@ -46,7 +46,7 @@ export default function ProfileCard({ user }: { user: User }) {
       toast.promise(uploadImage(formData), {
         loading: "در حال بروزرسانی تصویر...",
         success: (res) => {
-          setFile(null);
+          setFile(undefined);
 
           if (res?.imageUrl) {
             execute(res.imageUrl);
@@ -78,7 +78,7 @@ export default function ProfileCard({ user }: { user: User }) {
             onOpenChange={() => {
               setOpen((prevState) => !prevState);
 
-              !open && setFile(null);
+              !open && setFile(undefined);
             }}
           >
             <DialogTrigger asChild>
