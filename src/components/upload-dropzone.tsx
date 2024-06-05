@@ -9,11 +9,17 @@ import Icon from "./common/icon";
 import { Button } from "./ui/button";
 
 type Props = {
-  onFileAccepted: (file: File | null) => void;
+  onFileAccepted: (file: File | undefined) => void;
+  defaultImageUrl?: string;
 };
 
-export default function UploadDropzone({ onFileAccepted }: Props) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export default function UploadDropzone({
+  onFileAccepted,
+  defaultImageUrl,
+}: Props) {
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(
+    defaultImageUrl,
+  );
   const [errors, setErrors] = useState<{ code: string; message: string }[]>([]);
 
   const onDrop = useCallback(
@@ -63,8 +69,8 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
             variant="destructive"
             className="absolute right-2 top-2 size-9 rounded-full"
             onClick={() => {
-              setPreviewUrl(null);
-              onFileAccepted(null);
+              setPreviewUrl(undefined);
+              onFileAccepted(undefined);
             }}
           >
             <Icon name="Trash" size={20} />
