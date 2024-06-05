@@ -19,6 +19,11 @@ export default function TiptapEditor({ onChange }: Props) {
       },
     },
     onUpdate({ editor }) {
+      if (editor.isEmpty) {
+        onChange("");
+        return;
+      }
+
       onChange(editor.getHTML());
     },
   });
