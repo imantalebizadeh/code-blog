@@ -1,5 +1,6 @@
 "use client";
 
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 
 import { ComponentPropsWithoutRef } from "react";
@@ -10,7 +11,11 @@ import TiptapEditor from "../tiptap-editor";
 import UploadDropzone from "../upload-dropzone";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category, Post } from "@prisma/client";
+import { toast } from "sonner";
 import { z } from "zod";
+
+import { createPost } from "@/server/actions/post";
+import { uploadImage } from "@/server/actions/upload";
 
 import { cn } from "@/lib/utils";
 import { postFormSchema } from "@/lib/validations/post";
@@ -49,6 +54,36 @@ export default function PostForm({
 }: PostFormProps) {
   const router = useRouter();
 
+  const { execute: uploadCoverImage, status: uploadStatus } = useAction(
+    uploadImage,
+    {
+      onError: (err) => {
+        toast.error(err.serverError);
+      },
+      onSuccess: (res) => {
+        const { title, content, category } = form.getValues();
+
+        addPost({
+          title,
+          content,
+          category,
+          image: res.imageUrl,
+        });
+      },
+    },
+  );
+
+  const { execute: addPost, status: addStatus } = useAction(createPost, {
+    onError(err) {
+      toast.error(err.serverError);
+    },
+    onSuccess() {
+      toast.success("مقاله با موفقیت ذخیره شد");
+
+      router.push("/profile");
+    },
+  });
+
   const form = useForm<z.infer<typeof postFormSchema>>({
     mode: "onChange",
     resolver: zodResolver(postFormSchema),
@@ -61,9 +96,16 @@ export default function PostForm({
       : undefined,
   });
 
-  const onSubmit = (values: z.infer<typeof postFormSchema>) => {
-    console.log(values);
+  const onSubmit = ({ image }: z.infer<typeof postFormSchema>) => {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    uploadCoverImage({ formData });
   };
+
+  const disabled = [uploadStatus, addStatus].some(
+    (status) => status === "executing",
+  );
 
   return (
     <Form {...form}>
@@ -131,7 +173,7 @@ export default function PostForm({
               <FormLabel>تصویر مقاله</FormLabel>
               <FormControl>
                 <UploadDropzone
-                  defaultImageUrl={post?.image}
+                  defaultImageUrl={post?.cover_image}
                   onFileAccepted={(file) => field.onChange(file)}
                 />
               </FormControl>
@@ -162,12 +204,21 @@ export default function PostForm({
             <span>انصراف</span>
           </Button>
 
-          <Button type="submit">
-            <Icon
-              name={type === "Create" ? "Plus" : "Pen"}
-              size={16}
-              className="ml-2"
-            />
+          <Button type="submit" disabled={disabled}>
+            {disabled ? (
+              <Icon
+                name="LoaderCircle"
+                size={16}
+                className="ml-2 animate-spin"
+              />
+            ) : (
+              <Icon
+                name={type === "Create" ? "Plus" : "Pen"}
+                size={16}
+                className="ml-2"
+              />
+            )}
+
             <span>{type === "Create" ? "ایجاد مقاله" : "ویرایش مقاله"}</span>
           </Button>
         </div>
