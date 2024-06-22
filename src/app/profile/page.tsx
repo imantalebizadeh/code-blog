@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 
+import { Suspense } from "react";
+
 import type { User } from "@prisma/client";
 
 import { auth } from "@/server/auth";
@@ -7,6 +9,7 @@ import { getUserByUsername } from "@/server/data/user";
 
 import PasswordEditForm from "@/components/forms/password-form";
 import ProfileForm from "@/components/forms/profile-form";
+import Posts from "@/components/posts";
 import ProfileCard from "@/components/profile-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -34,7 +37,7 @@ export default async function ProfilePage() {
       <ProfileCard user={user} />
 
       <Tabs defaultValue="account" dir="rtl" className="w-full space-y-3">
-        <TabsList className="h-auto w-full rounded-xl bg-primary-foreground p-2 *:w-full md:justify-start *:md:w-auto">
+        <TabsList className="h-auto w-full rounded-xl p-2 *:w-full md:justify-start *:md:w-auto">
           <TabsTrigger value="account" className="rounded-xl px-4 py-4">
             اطلاعات من
           </TabsTrigger>
@@ -47,15 +50,14 @@ export default async function ProfilePage() {
         </TabsList>
         <TabsContent value="account">
           {/* Show user form here. */}
-          {/* اطلاعات من */}
-          <div className="grid grid-cols-1 grid-rows-[1fr_auto] gap-8 rounded-xl bg-primary-foreground p-6 md:grid-cols-2 md:grid-rows-1">
-            <section className="divide-y">
+          <div className="grid grid-cols-1 grid-rows-[1fr_auto] gap-8 rounded-xl bg-muted  p-6 md:grid-cols-2 md:grid-rows-1">
+            <section className="divide-y divide-background">
               <h4 className="mb-4 scroll-m-20 text-xl font-semibold tracking-tight">
                 ویرایش اطلاعات
               </h4>
               <ProfileForm user={user} />
             </section>
-            <section className="divide-y">
+            <section className="divide-y divide-background">
               <h4 className="mb-4 scroll-m-20 text-xl font-semibold tracking-tight">
                 تغییر رمز عبور
               </h4>
@@ -65,7 +67,9 @@ export default async function ProfilePage() {
         </TabsContent>
         <TabsContent value="posts">
           {/* Show user's posts here. */}
-          مقالات من
+          <Suspense fallback={<div>loading...</div>}>
+            <Posts />
+          </Suspense>
         </TabsContent>
         <TabsContent value="savedPosts">
           {/* Show user's saved posts here */}
