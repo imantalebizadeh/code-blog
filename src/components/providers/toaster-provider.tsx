@@ -5,6 +5,7 @@ export default function ToasterProvider() {
   return (
     <Toaster
       dir="rtl"
+      expand
       pauseWhenPageIsHidden
       toastOptions={{ className: "bg-background font-vazirmatn" }}
       icons={{
