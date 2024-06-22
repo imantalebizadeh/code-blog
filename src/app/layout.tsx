@@ -49,11 +49,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body
-        className={cn(
-          "font-vazirmatn text-primary backdrop:bg-background",
-          inter.variable,
-          vazirmatn.variable,
-        )}
+        className={cn("font-vazirmatn", inter.variable, vazirmatn.variable)}
       >
         <ThemeProvider attribute="class" defaultTheme="light">
           <div className="flex min-h-screen w-full flex-col">
