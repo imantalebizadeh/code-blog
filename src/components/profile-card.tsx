@@ -16,7 +16,6 @@ import Icon from "@/components/common/icon";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -36,31 +35,42 @@ export default function ProfileCard({ user }: { user: User }) {
   const [file, setFile] = useState<File | undefined>(undefined);
   const [open, setOpen] = useState<boolean>(false);
 
-  const { execute } = useAction(updateUserImage);
+  const { execute: uploadUserAvatar, status: uploadStatus } = useAction(
+    uploadImage,
+    {
+      onError: (err) => {
+        toast.error(err.serverError);
+      },
+      onSuccess: (res) => {
+        toast.success("تصویر با موفقیت بارگذاری شد");
 
-  const handleUpload = async () => {
+        setOpen(false);
+
+        updateUserAvatar(res.imageUrl);
+      },
+    },
+  );
+
+  const { execute: updateUserAvatar } = useAction(updateUserImage, {
+    onError: (err) => {
+      toast.error(err.serverError);
+    },
+    onSuccess: () => {
+      toast.success("تصویر شما با موفقیت بروزرسانی شد");
+    },
+  });
+
+  const handleUpload = () => {
     if (file) {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("image", file);
 
-      toast.promise(uploadImage(formData), {
-        loading: "در حال بروزرسانی تصویر...",
-        success: (res) => {
-          setFile(undefined);
-
-          if (res?.imageUrl) {
-            execute(res.imageUrl);
-
-            return "تصویر با موفقیت بروزرسانی شد";
-          }
-        },
-        error: "خطا در بروزرسانی تصویر",
-      });
+      uploadUserAvatar({ formData });
     }
   };
 
   return (
-    <div className="grid grid-cols-1 grid-rows-[6rem_3.5rem_3.5rem_auto] rounded-xl bg-primary-foreground">
+    <div className="grid grid-cols-1 grid-rows-[6rem_3.5rem_3.5rem_auto] rounded-xl bg-muted">
       <div className="col-start-1 col-end-2 row-start-1 row-end-3 rounded-t-xl bg-gradient-to-r from-[#fbe9d7] to-[#f6d5f7]" />
       <div className="col-start-1 col-end-2 row-start-2 row-end-4 flex justify-between px-4 md:px-6">
         <div className="relative">
@@ -69,7 +79,7 @@ export default function ProfileCard({ user }: { user: User }) {
             alt={user.name || ""}
             width={120}
             height={120}
-            className="z-10 aspect-square rounded-full ring-4 ring-primary-foreground ring-offset-0"
+            className="z-10 aspect-square rounded-full ring-4 ring-muted ring-offset-0"
             priority
           />
 
@@ -84,7 +94,7 @@ export default function ProfileCard({ user }: { user: User }) {
             <DialogTrigger asChild>
               <Button
                 size={"icon"}
-                className="absolute -bottom-2 left-0 rounded-full ring ring-primary-foreground ring-offset-0"
+                className="absolute -bottom-2 left-0 rounded-full ring ring-muted ring-offset-0"
               >
                 <Icon name="Camera" size={20} />
               </Button>
@@ -103,15 +113,20 @@ export default function ProfileCard({ user }: { user: User }) {
               />
 
               <DialogFooter className="gap-3 sm:justify-end">
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    onClick={handleUpload}
-                    disabled={!file || status === "executing"}
-                  >
-                    بارگذاری تصویر
-                  </Button>
-                </DialogClose>
+                <Button
+                  type="button"
+                  onClick={handleUpload}
+                  disabled={!file || uploadStatus === "executing"}
+                >
+                  {uploadStatus === "executing" && (
+                    <Icon
+                      name="LoaderCircle"
+                      size={20}
+                      className="ml-2 animate-spin"
+                    />
+                  )}
+                  <span>بارگذاری تصویر</span>
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
