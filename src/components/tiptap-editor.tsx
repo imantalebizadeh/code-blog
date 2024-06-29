@@ -6,11 +6,13 @@ import TiptapToolbar from "./tiptap-toolbar";
 
 type Props = {
   onChange: (richText: string) => void;
+  content?: string | null;
 };
 
-export default function TiptapEditor({ onChange }: Props) {
+export default function TiptapEditor({ onChange, content }: Props) {
   const editor = useEditor({
     extensions: editorExtensions,
+    content: content ?? undefined,
     autofocus: "end",
     editorProps: {
       attributes: {
