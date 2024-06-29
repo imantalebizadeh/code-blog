@@ -70,7 +70,7 @@ export default function ProfileCard({ user }: { user: User }) {
   };
 
   return (
-    <div className="grid grid-cols-1 grid-rows-[6rem_3.5rem_3.5rem_auto] rounded-xl bg-muted">
+    <div className="grid grid-cols-1 grid-rows-[6rem_3.5rem_3.5rem_auto] rounded-xl bg-accent/50">
       <div className="col-start-1 col-end-2 row-start-1 row-end-3 rounded-t-xl bg-gradient-to-r from-[#fbe9d7] to-[#f6d5f7]" />
       <div className="col-start-1 col-end-2 row-start-2 row-end-4 flex justify-between px-4 md:px-6">
         <div className="relative">
@@ -79,7 +79,7 @@ export default function ProfileCard({ user }: { user: User }) {
             alt={user.name || ""}
             width={120}
             height={120}
-            className="z-10 aspect-square rounded-full ring-4 ring-muted ring-offset-0"
+            className="z-10 aspect-square rounded-full ring-4 ring-[#F9F9FA] ring-offset-0 dark:ring-[#111825]"
             priority
           />
 
@@ -94,7 +94,7 @@ export default function ProfileCard({ user }: { user: User }) {
             <DialogTrigger asChild>
               <Button
                 size={"icon"}
-                className="absolute -bottom-2 left-0 rounded-full ring ring-muted ring-offset-0"
+                className="absolute -bottom-2 left-0 rounded-full ring ring-[#F9F9FA] ring-offset-0 dark:ring-[#111825]"
               >
                 <Icon name="Camera" size={20} />
               </Button>
