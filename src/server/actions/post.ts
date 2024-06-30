@@ -8,11 +8,11 @@ import { z } from "zod";
 import { action, authAction } from "@/lib/action.client";
 import { postFormSchema } from "@/lib/validations/post";
 
-const createPostSchema = postFormSchema.extend({
-  image: z.string().url(),
+const editSchema = postFormSchema.extend({
+  postId: z.string(),
 });
 
-export const createPost = authAction(createPostSchema, async (values, user) => {
+export const createPost = authAction(postFormSchema, async (values, user) => {
   const { title, content, category, image } = values;
 
   try {
@@ -20,7 +20,8 @@ export const createPost = authAction(createPostSchema, async (values, user) => {
       data: {
         title,
         content,
-        cover_image: image,
+        cover_image: image as string,
+        published: true,
         author: {
           connect: {
             id: user.id,
@@ -34,7 +35,7 @@ export const createPost = authAction(createPostSchema, async (values, user) => {
       },
     });
 
-    revalidatePath("/profile");
+    revalidatePath("/profile/blogs");
   } catch (error) {
     throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
   }
@@ -50,7 +51,7 @@ export const removePost = action(
         },
       });
 
-      revalidatePath("/profile");
+      revalidatePath("/profile/blogs");
     } catch (error) {
       console.error(error);
       throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
@@ -58,4 +59,25 @@ export const removePost = action(
   },
 );
 
-export const updatePost = action(z.object({}), async () => {});
+export const editPost = action(editSchema, async (values) => {
+  const { postId, title, content, category, image } = values;
+
+  try {
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        title,
+        content,
+        cover_image: image as string,
+        category: { connect: { id: category } },
+      },
+    });
+
+    revalidatePath("/profile/blogs");
+  } catch (error) {
+    console.error(error);
+    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+  }
+});

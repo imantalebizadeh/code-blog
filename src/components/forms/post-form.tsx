@@ -10,11 +10,11 @@ import Icon from "../common/icon";
 import TiptapEditor from "../tiptap-editor";
 import UploadDropzone from "../upload-dropzone";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, Post } from "@prisma/client";
+import type { Category, Post } from "@prisma/client";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { createPost } from "@/server/actions/post";
+import { createPost, editPost } from "@/server/actions/post";
 import { uploadImage } from "@/server/actions/upload";
 
 import { cn } from "@/lib/utils";
@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/select";
 
 type PostFormProps = {
-  type: "Create" | "Update";
+  type: "Create" | "Edit";
   categories: Category[];
   post?: Post;
 } & ComponentPropsWithoutRef<"form">;
@@ -63,12 +63,22 @@ export default function PostForm({
       onSuccess: (res) => {
         const { title, content, category } = form.getValues();
 
-        addPost({
-          title,
-          content,
-          category,
-          image: res.imageUrl,
-        });
+        if (type === "Create") {
+          addPost({
+            title,
+            content,
+            category,
+            image: res.imageUrl,
+          });
+        } else {
+          updatePost({
+            postId: post?.id as string,
+            title,
+            content,
+            category,
+            image: res.imageUrl,
+          });
+        }
       },
     },
   );
@@ -80,7 +90,18 @@ export default function PostForm({
     onSuccess() {
       toast.success("مقاله با موفقیت ذخیره شد");
 
-      router.push("/profile");
+      router.push("/profile/blogs");
+    },
+  });
+
+  const { execute: updatePost, status: updateStatus } = useAction(editPost, {
+    onError: (err) => {
+      toast.error(err.serverError);
+    },
+    onSuccess: () => {
+      toast.success("مقاله با موفقیت ویرایش شد");
+
+      router.push("/profile/blogs");
     },
   });
 
@@ -92,18 +113,35 @@ export default function PostForm({
           title: post.title,
           content: post.content as string,
           category: post.categoryId,
+          image: post.cover_image,
         }
       : undefined,
   });
 
-  const onSubmit = ({ image }: z.infer<typeof postFormSchema>) => {
+  const onSubmit = (values: z.infer<typeof postFormSchema>) => {
+    const { title, content, category, image } = values;
+
     const formData = new FormData();
     formData.append("image", image);
 
-    uploadCoverImage({ formData });
+    if (type === "Create") {
+      uploadCoverImage({ formData });
+    } else {
+      if (typeof image === "string") {
+        updatePost({
+          postId: post?.id as string,
+          title,
+          content,
+          category,
+          image,
+        });
+      } else {
+        uploadCoverImage({ formData });
+      }
+    }
   };
 
-  const disabled = [uploadStatus, addStatus].some(
+  const disabled = [uploadStatus, addStatus, updateStatus].some(
     (status) => status === "executing",
   );
 
@@ -190,7 +228,10 @@ export default function PostForm({
             <FormItem>
               <FormLabel>محتوای مقاله</FormLabel>
               <FormControl>
-                <TiptapEditor onChange={field.onChange} />
+                <TiptapEditor
+                  onChange={field.onChange}
+                  content={post?.content}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -213,7 +254,7 @@ export default function PostForm({
               />
             ) : (
               <Icon
-                name={type === "Create" ? "Plus" : "Pen"}
+                name={type === "Create" ? "Plus" : "Pencil"}
                 size={16}
                 className="ml-2"
               />
