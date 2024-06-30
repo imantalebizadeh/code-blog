@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 
-import { getSession } from "@/server/auth";
+import { auth } from "@/server/auth";
 import { getUserByUsername } from "@/server/data/user";
 
 import PasswordEditForm from "@/components/forms/password-form";
 import ProfileForm from "@/components/forms/profile-form";
 
 export default async function ProfilePage() {
-  const session = await getSession();
+  const session = await auth();
 
   if (!session?.user) notFound();
 

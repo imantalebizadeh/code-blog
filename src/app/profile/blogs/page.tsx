@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getSession } from "@/server/auth";
+import { auth } from "@/server/auth";
 import prisma from "@/server/db";
 
 import Icon from "@/components/common/icon";
@@ -9,7 +9,7 @@ import PostList from "@/components/post-list";
 import { Button } from "@/components/ui/button";
 
 export default async function BlogPage() {
-  const session = await getSession();
+  const session = await auth();
 
   if (!session?.user) notFound();
 
