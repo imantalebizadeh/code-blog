@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import * as React from "react";
 
-import { auth, getSession } from "@/server/auth";
+import { auth } from "@/server/auth";
 import { getUserByUsername } from "@/server/data/user";
 
 import ProfileCard from "@/components/profile-card";
@@ -30,7 +30,7 @@ type Props = Readonly<{
 }>;
 
 export default async function ProfileLayout({ children }: Props) {
-  const session = await getSession();
+  const session = await auth();
 
   if (!session?.user) notFound();
 
