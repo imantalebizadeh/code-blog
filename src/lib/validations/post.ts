@@ -11,5 +11,8 @@ export const postFormSchema = z.object({
   category: z.string({
     required_error: "دسته بندی مقاله الزامی می باشد",
   }),
-  image: z.instanceof(File, { message: "تصویر مقاله الزامی می باشد" }),
+  image: z.union([
+    z.instanceof(File, { message: "تصویر مقاله الزامی می باشد" }),
+    z.string({ required_error: "تصویر مقاله الزامی می باشد" }).url(),
+  ]),
 });
