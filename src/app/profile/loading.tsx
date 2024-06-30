@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="flex h-full w-full items-center justify-center">
+    <div className="grid h-full w-full place-items-center">
       <span className="loader" />
     </div>
   );
