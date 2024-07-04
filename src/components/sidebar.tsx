@@ -46,7 +46,7 @@ export default function Sidebar({ categories }: Props) {
           {categories.map((category) => (
             <SidebarItem
               key={category.name}
-              href={`/categories/${category.name}`}
+              href={encodeURI(`/categories/${category.name}`)}
             >
               {category.name}
             </SidebarItem>
