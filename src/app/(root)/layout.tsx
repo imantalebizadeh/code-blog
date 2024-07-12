@@ -16,7 +16,7 @@ export default async function RootLayout({ children }: Props) {
     <div>
       <HeroSection />
 
-      <div className="mt-24 grid grid-cols-1 grid-rows-2 gap-8 md:mt-26 md:grid-cols-[auto_1fr] md:grid-rows-1">
+      <div className="md:mt-26 mt-24 grid grid-cols-1 grid-rows-[auto_1fr] gap-8 md:grid-cols-[auto_1fr] md:grid-rows-1">
         <Sidebar categories={categories} />
         {children}
       </div>
