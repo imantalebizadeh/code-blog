@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { auth } from "@/server/auth";
-import prisma from "@/server/db";
+import { getPosts, getPostsCount } from "@/server/data/post";
 
 import Icon from "@/components/common/icon";
 import PostList from "@/components/post-list";
@@ -13,10 +13,10 @@ export default async function BlogPage() {
 
   if (!session?.user) notFound();
 
-  const posts = await prisma.post.findMany({
-    where: { authorId: session.user.id },
-    include: { category: true },
-  });
+  const postsData = getPosts({ limit: 34 });
+  const postsCountData = getPostsCount();
+
+  const [posts, postsCount] = await Promise.all([postsData, postsCountData]);
 
   return posts && posts.length > 0 ? (
     <section className="flex flex-col gap-5 rounded-xl bg-accent/50 p-4">
@@ -29,10 +29,10 @@ export default async function BlogPage() {
         </Button>
       </header>
 
-      <PostList posts={posts} />
+      <PostList InitialPosts={posts} postsCount={postsCount} mode="profile" />
     </section>
   ) : (
-    <div className="flex flex-col items-center justify-center gap-5 rounded-xl bg-accent/50 p-10">
+    <section className="flex flex-col items-center justify-center gap-5 rounded-xl bg-accent/50 p-10">
       <div className="space-y-3">
         <Icon
           name="PackageOpen"
@@ -44,6 +44,6 @@ export default async function BlogPage() {
       <Button asChild>
         <Link href="/create">ایجاد پست جدید</Link>
       </Button>
-    </div>
+    </section>
   );
 }
