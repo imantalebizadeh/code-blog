@@ -13,6 +13,14 @@ const editSchema = postFormSchema.extend({
   postId: z.string(),
 });
 
+export const fetchPosts = async ({
+  limit,
+  skip,
+}: {
+  limit: number;
+  skip: number;
+}) => await getPosts({ limit, skip });
+
 export const createPost = authAction(postFormSchema, async (values, user) => {
   const { title, content, summary, category, image } = values;
 
