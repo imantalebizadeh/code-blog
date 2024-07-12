@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getPosts, getPostsCount } from "../data/post";
 import prisma from "../db";
 import { z } from "zod";
 
@@ -13,13 +14,14 @@ const editSchema = postFormSchema.extend({
 });
 
 export const createPost = authAction(postFormSchema, async (values, user) => {
-  const { title, content, category, image } = values;
+  const { title, content, summary, category, image } = values;
 
   try {
     await prisma.post.create({
       data: {
         title,
         content,
+        summary,
         cover_image: image as string,
         published: true,
         author: {
@@ -60,7 +62,7 @@ export const removePost = action(
 );
 
 export const editPost = action(editSchema, async (values) => {
-  const { postId, title, content, category, image } = values;
+  const { postId, title, content, summary, category, image } = values;
 
   try {
     await prisma.post.update({
@@ -70,6 +72,7 @@ export const editPost = action(editSchema, async (values) => {
       data: {
         title,
         content,
+        summary,
         cover_image: image as string,
         category: { connect: { id: category } },
       },
