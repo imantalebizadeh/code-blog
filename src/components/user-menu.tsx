@@ -66,7 +66,7 @@ export default function UserMenu({ user }: UserMenuProps) {
             <span>حساب کاربری</span>
           </DropdownMenuItem>
         </Link>
-        <Link href={"/profile/posts"}>
+        <Link href={"/profile/blogs"}>
           <DropdownMenuItem className="gap-2">
             <Icon name="Newspaper" size={16} />
             <span>مقالات من</span>
