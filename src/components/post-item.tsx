@@ -1,143 +1,87 @@
-"use client";
-
-import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
 import Link from "next/link";
 
 import { ComponentPropsWithoutRef } from "react";
 
-import type { Category, Post } from "@prisma/client";
-import { toast } from "sonner";
+import { formatDate } from "@/lib/utils";
 
-import { removePost } from "@/server/actions/post";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import Icon from "./common/icon";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
+import PostActions from "./post-actions";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { BlogPost } from "@/types";
 
-type PostItemProps = {
-  post: Post & { category: Category };
-} & ComponentPropsWithoutRef<"div">;
+type Props = {
+  post: BlogPost;
+  mode: "profile" | "home";
+} 
 
-export default function PostItem({ post, ...props }: PostItemProps) {
-  const { execute: deletePost } = useAction(removePost, {
-    onError: (err) => {
-      toast.error(err.serverError);
-    },
-    onSuccess: () => {
-      toast.success("پست با موفقیت حذف شد");
-    },
-  });
-
+export default function PostItem({ post, mode }: Props) {
   return (
-    <Card className="gap-3 rounded-lg p-2 md:flex-row" {...props}>
-      <CardContent className="p-0">
+    <Card className="space-y-4 border-none bg-transparent p-0 shadow-none">
+      <CardContent className="flex flex-col gap-4 p-0">
         <div className="relative overflow-hidden rounded-md">
-          <Image
-            src={post.cover_image}
-            alt={post.title}
-            width={256}
-            height={102}
-            className="w-full max-w-full"
-          />
-
-          <Link
-            href={`/categories/${post.category.name}`}
-            className="hover:underline"
-          >
-            <Badge className="absolute bottom-2 right-2 rounded-md">
-              {post.category.name}
-            </Badge>
+          <Link href={`/blog/${post.id}`}>
+            <Image
+              src={post.cover_image}
+              alt={post.title}
+              width={288}
+              height={162}
+              loading="lazy"
+              className="aspect-video w-full transition-transform hover:scale-105"
+            />
           </Link>
+
+          {mode === "profile" && (
+            <PostActions postId={post.id} className="absolute left-2 top-2" />
+          )}
         </div>
 
-        <div className="mt-3 flex flex-col gap-2">
+        <div className="space-y-2">
+          <small className="text-sm font-medium leading-none text-primary">
+            {post.category?.name}
+          </small>
+
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 *:text-muted-foreground">
-              <Icon
-                name={post.published ? "BadgeCheck" : "BadgeInfo"}
-                size={16}
-              />
-              <p className="text-sm">
-                {post.published ? "منتشر شده" : "پیش نویس"}
-              </p>
-            </div>
+            <h4 className="peer line-clamp-1 w-fit scroll-m-20 text-xl font-semibold tracking-tight">
+              <Link href={`/blog/${post.id}`}>{post.title}</Link>
+            </h4>
 
-            <AlertDialog>
-              <DropdownMenu dir="rtl" modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 rounded-full"
-                    title="گزینه ها"
-                  >
-                    <Icon name="EllipsisVertical" size={16} />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <Link href={`/edit/${post.id}`}>
-                    <DropdownMenuItem className="gap-2">
-                      <Icon name="Pencil" size={16} />
-                      <span>ویرایش</span>
-                    </DropdownMenuItem>
-                  </Link>
-
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem className="gap-2">
-                      <Icon name="Trash2" size={16} />
-                      <span>حذف مقاله</span>
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <AlertDialogContent className="max-w-[360px] rounded-lg md:max-w-md">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    آیا از انجام این کار مطمئن هستید؟
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    با حذف این مقاله، همه مطالب مرتبط به این مقاله پاک خواهند شد
-                    و دیگر قابل بازیابی نخواهد بود.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>انصراف</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => deletePost({ postId: post.id })}
-                  >
-                    حذف مقاله
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Icon
+              name="ArrowUpLeft"
+              size={20}
+              className="transition-transform peer-hover:-rotate-45"
+            />
           </div>
 
-          <h4 className="scroll-m-20 truncate text-xl font-semibold tracking-tight">
-            {post.title}
-          </h4>
+          <p className="line-clamp-2 text-sm leading-normal text-muted-foreground">
+            {post.summary}
+          </p>
         </div>
       </CardContent>
+
+      {mode === "home" && (
+        <CardFooter className="p-0">
+          <div className="flex gap-2">
+            <Avatar>
+              <AvatarImage
+                src={post.author?.image || "/assets/user-avatar.png"}
+                alt="تصویر نویسنده"
+              />
+            </Avatar>
+
+            <div className="space-y-[0.5]">
+              <small className="text-base font-medium leading-none">
+                {post.author?.name}
+              </small>
+              <p className="text-sm text-muted-foreground">
+                {formatDate(post.createdAt)}
+              </p>
+            </div>
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 }
