@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 
 import Icon from "../common/icon";
 import TiptapEditor from "../tiptap-editor";
+import { Textarea } from "../ui/textarea";
 import UploadDropzone from "../upload-dropzone";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Category, Post } from "@prisma/client";
@@ -61,12 +62,13 @@ export default function PostForm({
         toast.error(err.serverError);
       },
       onSuccess: (res) => {
-        const { title, content, category } = form.getValues();
+        const { title, content, summary, category } = form.getValues();
 
         if (type === "Create") {
           addPost({
             title,
             content,
+            summary,
             category,
             image: res.imageUrl,
           });
@@ -75,6 +77,7 @@ export default function PostForm({
             postId: post?.id as string,
             title,
             content,
+            summary,
             category,
             image: res.imageUrl,
           });
@@ -112,6 +115,7 @@ export default function PostForm({
       ? {
           title: post.title,
           content: post.content as string,
+          summary: post.summary,
           category: post.categoryId,
           image: post.cover_image,
         }
@@ -119,7 +123,7 @@ export default function PostForm({
   });
 
   const onSubmit = (values: z.infer<typeof postFormSchema>) => {
-    const { title, content, category, image } = values;
+    const { title, content, summary, category, image } = values;
 
     const formData = new FormData();
     formData.append("image", image);
@@ -132,6 +136,7 @@ export default function PostForm({
           postId: post?.id as string,
           title,
           content,
+          summary,
           category,
           image,
         });
@@ -201,6 +206,23 @@ export default function PostForm({
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="summary"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>خلاصه مقاله</FormLabel>
+              <FormControl>
+                <Textarea {...field} className="resize-none" />
+              </FormControl>
+              <FormDescription>
+                یک خلاصه کوتاه در حد چند خط (500 کاراکتر) برای مقاله خود بنویسید
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Post Image */}
         <FormField
