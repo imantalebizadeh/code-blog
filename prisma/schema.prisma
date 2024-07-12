@@ -55,6 +55,7 @@ model Post {
   id          String    @id @default(cuid())
   title       String
   content     String?   @db.Text
+  summary     String    @default("") @db.Text
   published   Boolean   @default(false)
   cover_image String    @default("")
   author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
