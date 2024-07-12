@@ -1,8 +1,12 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
+  const router = useRouter();
+
   return (
     <div className="flex items-center justify-center">
       <div className="space-y-5 text-center">
@@ -12,8 +16,11 @@ export default function NotFound() {
         <h3 className="select-none scroll-m-20 text-2xl font-semibold tracking-tight">
           صفحه مد نظر یافت نشد!
         </h3>
-        <Button variant={"default"} asChild>
-          <Link href={"/"}>بازگشت به صفحه اصلی</Link>
+        <Button
+          variant={"default"}
+          onClick={() => router.push("/", { scroll: false })}
+        >
+          بازگشت به صفحه اصلی
         </Button>
       </div>
     </div>
