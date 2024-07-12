@@ -61,7 +61,7 @@ export const transliterationMap: Record<string, string> = {
 };
 
 export const editorExtensions: Extensions = [
-  StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+  StarterKit.configure({ heading: { levels: [1, 2, 3] }, codeBlock: false }),
   TextAlign.configure({
     defaultAlignment: "right",
     types: ["heading", "paragraph"],
