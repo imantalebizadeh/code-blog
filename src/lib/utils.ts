@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format, formatDistance, subDays } from "date-fns-jalali";
 import { twMerge } from "tailwind-merge";
 
 import { transliterationMap } from "./constants";
@@ -24,4 +25,10 @@ export function generateUniqueUsername(persianName: string) {
   const uniqueUsername = `${transliteratedName}-${randomNumber}`;
 
   return uniqueUsername;
+}
+
+export function formatDate(date: Date) {
+  return formatDistance(subDays(date, 0), new Date(), {
+    addSuffix: true,
+  });
 }
