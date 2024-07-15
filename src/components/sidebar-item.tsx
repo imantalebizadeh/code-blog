@@ -1,12 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ComponentPropsWithoutRef } from "react";
+
 import { cn } from "@/lib/utils";
 
-export default function SidebarItem({
-  href,
-  children,
-}: React.ComponentPropsWithoutRef<typeof Link>) {
+type SidebarItemProps = { text: string } & ComponentPropsWithoutRef<
+  typeof Link
+>;
+
+export default function SidebarItem({ text, href }: SidebarItemProps) {
   const pathname = usePathname();
 
   return (
@@ -24,7 +29,7 @@ export default function SidebarItem({
           "text-primary": href === pathname,
         })}
       >
-        {children}
+        {text}
       </Link>
     </li>
   );
