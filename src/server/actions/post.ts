@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getPosts, getPostsCount } from "../data/post";
+import { getPosts } from "../data/post";
 import prisma from "../db";
 import { z } from "zod";
 
@@ -13,13 +13,19 @@ const editSchema = postFormSchema.extend({
   postId: z.string(),
 });
 
-export const fetchPosts = async ({
-  limit,
-  skip,
-}: {
+type fetchPostsParams = {
   limit: number;
   skip: number;
-}) => await getPosts({ limit, skip });
+  filter?: {
+    category?: string;
+    search?: string;
+  };
+};
+
+//** Use this function to receive the data of posts on the client side, so that sensitive and important data can be prevented from being stolen on the client side by running this function on the server side.
+export const fetchPosts = async (params: fetchPostsParams) => {
+  return await getPosts(params);
+};
 
 export const createPost = authAction(postFormSchema, async (values, user) => {
   const { title, content, summary, category, image } = values;

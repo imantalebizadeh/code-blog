@@ -2,24 +2,57 @@ import { cache } from "react";
 
 import prisma from "../db";
 
-export const getPosts = cache(
-  async ({ limit, skip }: { limit?: number; skip?: number }) => {
-    try {
-      const posts = await prisma.post.findMany({
-        skip,
+type getPostsParams = {
+  limit?: number;
+  skip?: number;
+  filter?: {
+    category?: string;
+    search?: string;
+  };
+};
+
+export const getPosts = cache(async (params: getPostsParams) => {
+  const { limit, skip, filter } = params;
+
+  let posts;
+
+  try {
+    if (filter?.search || filter?.category) {
+      posts = await prisma.post.findMany({
+        where: {
+          OR: [
+            {
+              category: {
+                name: filter?.category,
+              },
+            },
+            {
+              title: {
+                contains: filter?.search,
+              },
+            },
+          ],
+        },
         take: limit,
+        skip,
         orderBy: { createdAt: "desc" },
         include: { author: true, category: true },
       });
-      return posts;
-    } catch (error) {
-      console.error(error);
-      throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+    } else {
+      posts = await prisma.post.findMany({
+        take: limit,
+        skip,
+        orderBy: { createdAt: "desc" },
+        include: { author: true, category: true },
+      });
     }
-  },
-);
 
-export const getPostsCount = async () => await prisma.post.count();
+    return posts;
+  } catch (error) {
+    console.error(error);
+    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+  }
+});
 
 export const getPostById = cache(async (postId: string) => {
   try {
