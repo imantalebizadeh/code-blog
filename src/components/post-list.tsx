@@ -16,28 +16,32 @@ type PostListProps = {
   limit?: number;
   InitialPosts: BlogPost[];
   postsCount: number;
+  filter?: {
+    category?: string;
+  };
 };
 
 export default function PostList({
   InitialPosts,
   postsCount,
   mode,
+  filter,
 }: PostListProps) {
   const [posts, setPosts] = useState<BlogPost[]>(InitialPosts);
-  const [skip, setSkip] = useState<number>(0);
+  const [skip, setSkip] = useState(0);
 
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.5,
-    onChange(isIntersecting, entry) {
+    onChange(isIntersecting) {
       if (isIntersecting) {
-        setSkip(skip + 3);
+        setSkip(skip + 34);
       }
     },
   });
 
   useEffect(() => {
     if (isIntersecting) {
-      fetchPosts({ limit: 3, skip: 3 }).then((res) => {
+      fetchPosts({ limit: 34, skip, filter }).then((res) => {
         setPosts([...posts, ...res]);
       });
     }
