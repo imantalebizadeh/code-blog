@@ -82,3 +82,13 @@ export const getAllCategories = cache(async () => {
     throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
   }
 });
+
+export const getCategoryById = cache(async (id: string) => {
+  try {
+    const category = await prisma.category.findUnique({ where: { id } });
+    return category;
+  } catch (error) {
+    console.error(error);
+    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+  }
+});
