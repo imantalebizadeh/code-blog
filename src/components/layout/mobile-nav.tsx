@@ -5,9 +5,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import Icon from "./common/icon";
+import Icon from "../common/icon";
 import NavLinks from "./nav-links";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 export default function MobileNav() {
   return (

@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
-import Icon from "./common/icon";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import Icon from "../common/icon";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export default function SearchInput() {
   const [search, setSearch] = useState("");

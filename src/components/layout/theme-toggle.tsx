@@ -4,11 +4,11 @@ import { useTheme } from "next-themes";
 
 import * as React from "react";
 
+import Icon from "../common/icon";
+
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-
-import Icon from "./common/icon";
 
 type ThemeToggleProps = {
   className?: string;
