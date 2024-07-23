@@ -8,6 +8,10 @@ export const postFormSchema = z.object({
   content: z
     .string({ required_error: "محتوای مقاله الزامی می باشد" })
     .min(1, "محتوای مقاله الزامی می باشد"),
+  summary: z
+    .string({ required_error: "خلاصه مقاله الزامی می باشد" })
+    .min(1, "خلاصه مقاله الزامی می باشد")
+    .max(800, "خلاصه مقاله حداکثر باید 800 کاراکتر باشد"),
   category: z.string({
     required_error: "دسته بندی مقاله الزامی می باشد",
   }),
