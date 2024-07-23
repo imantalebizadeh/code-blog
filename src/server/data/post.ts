@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import prisma from "../db";
+import { User } from "@prisma/client";
 
 type getPostsParams = {
   limit?: number;
@@ -10,6 +11,14 @@ type getPostsParams = {
     search?: string;
   };
 };
+
+export const getAuthorById = cache(async (id: string) => {
+  const author = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  return author;
+});
 
 export const getPosts = cache(async (params: getPostsParams) => {
   const { limit, skip, filter } = params;
