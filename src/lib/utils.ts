@@ -27,8 +27,10 @@ export function generateUniqueUsername(persianName: string) {
   return uniqueUsername;
 }
 
-export function formatDate(date: Date) {
-  return formatDistance(subDays(date, 0), new Date(), {
-    addSuffix: true,
-  });
+export function formatDate(
+  locale: string,
+  options: Intl.DateTimeFormatOptions,
+  date: Date,
+) {
+  return new Intl.DateTimeFormat(locale, options).format(date);
 }

@@ -15,7 +15,7 @@ import { BlogPost } from "@/types";
 type Props = {
   post: BlogPost;
   mode: "profile" | "home";
-} 
+};
 
 export default function PostItem({ post, mode }: Props) {
   return (
@@ -76,7 +76,11 @@ export default function PostItem({ post, mode }: Props) {
                 {post.author?.name}
               </small>
               <p className="text-sm text-muted-foreground">
-                {formatDate(post.createdAt)}
+                {formatDate(
+                  "fa-IR",
+                  { year: "numeric", month: "numeric", day: "numeric" },
+                  post.createdAt,
+                )}
               </p>
             </div>
           </div>
