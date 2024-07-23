@@ -3,8 +3,8 @@ import { Inter, Vazirmatn } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
-import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Footer from "@/components/layout/footer";
+import Navbar from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ToasterProvider from "@/components/providers/toaster-provider";
 

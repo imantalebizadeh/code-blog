@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import * as React from "react";
 
 import Icon from "../common/icon";
-import Logo from "../logo";
+import Logo from "../common/logo";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { type VariantProps, cva } from "class-variance-authority";
 
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "./button";
 
-const ThemeToggle = dynamic(() => import("@/components/theme-toggle"), {
+const ThemeToggle = dynamic(() => import("@/components/layout/theme-toggle"), {
   ssr: false,
 });
 

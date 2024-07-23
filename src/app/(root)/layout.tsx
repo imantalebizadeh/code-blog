@@ -2,8 +2,8 @@ import React from "react";
 
 import { getAllCategories } from "@/server/data/post";
 
-import HeroSection from "@/components/hero-section";
-import Sidebar from "@/components/sidebar";
+import HeroSection from "@/components/layout/hero-section";
+import Sidebar from "@/components/layout/sidebar";
 
 type Props = Readonly<{
   children: React.ReactNode;

@@ -5,7 +5,7 @@ import * as React from "react";
 import { auth } from "@/server/auth";
 import { getUserByUsername } from "@/server/data/user";
 
-import ProfileCard from "@/components/profile-card";
+import ProfileCard from "@/components/layout/profile-card";
 import { NavigationLink } from "@/components/ui/navigation-link";
 import {
   NavigationMenu,
