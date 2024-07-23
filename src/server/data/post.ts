@@ -92,3 +92,16 @@ export const getCategoryById = cache(async (id: string) => {
     throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
   }
 });
+
+export const getComments = cache(async (postId: string) => {
+  try {
+    const comments = await prisma.comment.findMany({
+      where: { postId },
+      include: { author: true },
+    });
+    return comments;
+  } catch (error) {
+    console.error(error);
+    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+  }
+});
