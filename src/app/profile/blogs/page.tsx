@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { auth } from "@/server/auth";
-import { getPosts, getPostsCount } from "@/server/data/post";
+import { getPosts } from "@/server/data/post";
+import prisma from "@/server/db";
 
 import Icon from "@/components/common/icon";
 import PostList from "@/components/post-list";
@@ -14,7 +15,7 @@ export default async function BlogPage() {
   if (!session?.user) notFound();
 
   const postsData = getPosts({ limit: 34 });
-  const postsCountData = getPostsCount();
+  const postsCountData = prisma.post.count();
 
   const [posts, postsCount] = await Promise.all([postsData, postsCountData]);
 
