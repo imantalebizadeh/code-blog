@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { useState } from "react";
 
+import UploadDropzone from "../upload-dropzone";
 import type { User } from "@prisma/client";
 import { toast } from "sonner";
 
@@ -28,8 +29,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import UploadDropzone from "./upload-dropzone";
 
 export default function ProfileCard({ user }: { user: User }) {
   const [file, setFile] = useState<File | undefined>(undefined);
