@@ -1,7 +1,7 @@
 import { cache } from "react";
 
 import prisma from "../db";
-import { User } from "@prisma/client";
+import { Bookmark } from "@prisma/client";
 
 type getPostsParams = {
   limit?: number;
@@ -105,3 +105,24 @@ export const getComments = cache(async (postId: string) => {
     throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
   }
 });
+
+export const getBookmark = cache(
+  async ({
+    articleId,
+    userId,
+  }: {
+    articleId: string;
+    userId: string | undefined;
+  }) => {
+    if (userId) {
+      return await prisma.bookmark.findUnique({
+        where: {
+          bookmarks_pkey: {
+            postId: articleId,
+            userId: userId,
+          },
+        },
+      });
+    } else return null;
+  },
+);
