@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getPosts } from "../data/post";
+import { getBookmark, getPosts } from "../data/post";
 import prisma from "../db";
 import { z } from "zod";
 
@@ -98,3 +98,44 @@ export const editPost = action(editSchema, async (values) => {
     throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
   }
 });
+
+export const addBookmark = authAction(
+  z.object({ articleId: z.string() }),
+  async ({ articleId }, user) => {
+    try {
+      const bookmark = await getBookmark({
+        articleId,
+        userId: user.id,
+      });
+
+      if (bookmark) {
+        await prisma.bookmark.delete({
+          where: {
+            bookmarks_pkey: {
+              postId: bookmark.postId,
+              userId: bookmark.userId,
+            },
+          },
+        });
+
+        revalidatePath(`/blog/${articleId}`);
+
+        return { bookmarked: false };
+      } else {
+        await prisma.bookmark.create({
+          data: {
+            postId: articleId,
+            userId: user.id!,
+          },
+        });
+
+        revalidatePath(`/blog/${articleId}`);
+
+        return { bookmarked: true };
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("خطای , لطفا مجددا تلاش کنید");
+    }
+  },
+);
