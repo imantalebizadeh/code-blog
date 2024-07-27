@@ -1,3 +1,6 @@
+"use client";
+
+import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
@@ -5,8 +8,6 @@ import Icon from "../common/icon";
 import Logo from "../common/logo";
 import { Button } from "../ui/button";
 import UserMenu from "../user-menu";
-
-import { auth } from "@/server/auth";
 
 import {
   Tooltip,
@@ -22,8 +23,8 @@ const ThemeToggle = dynamic(() => import("@/components/layout/theme-toggle"), {
   ssr: false,
 });
 
-export default async function Navbar() {
-  const session = await auth();
+export default function Navbar() {
+  const { data: session, status } = useSession();
 
   return (
     <header className="container flex items-center justify-between py-6">
@@ -42,7 +43,7 @@ export default async function Navbar() {
       {/* Theme and login buttons */}
       <div className="flex gap-3">
         {session?.user ? (
-          <UserMenu user={session.user} />
+          <UserMenu user={session.user} status={status} />
         ) : (
           <TooltipProvider>
             <Tooltip delayDuration={300}>
@@ -51,6 +52,7 @@ export default async function Navbar() {
                   className="rounded-full"
                   size={"icon"}
                   variant={"secondary"}
+                  disabled={status === "loading"}
                 >
                   <Link href={"/login"}>
                     <Icon name={"UserRound"} size={20} />
