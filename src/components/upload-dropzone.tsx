@@ -54,20 +54,14 @@ export default function UploadDropzone({
     <>
       {previewUrl ? (
         <div className="relative w-full max-w-full overflow-hidden rounded-md">
-          <Image
-            src={previewUrl}
-            width={398}
-            height={398}
-            alt={""}
-            style={{ width: "auto", height: "auto" }}
-            className="h-72 w-full rounded-md object-cover"
-          />
+          <Image src={previewUrl} width={1600} height={640} alt={""} priority />
 
           <Button
             type="button"
             size="icon"
             variant="destructive"
             className="absolute right-2 top-2 size-9 rounded-full"
+            title="حذف تصویر"
             onClick={() => {
               setPreviewUrl(undefined);
               onFileAccepted(undefined);
