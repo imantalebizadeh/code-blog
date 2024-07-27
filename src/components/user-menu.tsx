@@ -23,9 +23,10 @@ import Icon from "./common/icon";
 
 type UserMenuProps = {
   user: Session["user"];
+  status: "loading" | "authenticated" | "unauthenticated";
 };
 
-export default function UserMenu({ user }: UserMenuProps) {
+export default function UserMenu({ user, status }: UserMenuProps) {
   const matches = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
 
@@ -33,6 +34,7 @@ export default function UserMenu({ user }: UserMenuProps) {
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger
         className={cn("block", { invisible: pathname === "/profile" })}
+        disabled={status === "loading"}
       >
         <Avatar>
           <AvatarImage src={user?.image as string} />
