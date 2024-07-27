@@ -32,18 +32,19 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?   @map("full_name")
-  username      String?   @unique
-  email         String?   @unique
+  id            String     @id @default(cuid())
+  name          String?    @map("full_name")
+  username      String?    @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   password      String?
   bio           String?
   Account       Account?
-  role          Role      @default(USER)
+  role          Role       @default(USER)
   posts         Post[]
   comments      Comment[]
+  Bookmarks     Bookmark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -52,17 +53,18 @@ model User {
 }
 
 model Post {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
-  content     String?   @db.Text
-  summary     String    @default("") @db.Text
-  published   Boolean   @default(false)
-  cover_image String    @default("")
-  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  content     String?    @db.Text
+  summary     String     @default("") @db.Text
+  published   Boolean    @default(false)
+  cover_image String     @default("")
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId    String
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId  String
   comments    Comment[]
+  Bookmark    Bookmark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -93,6 +95,16 @@ model Category {
   posts Post[]
 
   @@map("categories")
+}
+
+model Bookmark {
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  @@id([postId, userId], name: "bookmarks_pkey")
+  @@map("bookmarks")
 }
 
 enum Role {
