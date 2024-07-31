@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -5,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { auth } from "@/server/auth";
-import { getBookmark, getComments } from "@/server/data/post";
+import { getBookmark, getComments, getPostById } from "@/server/data/post";
 import prisma from "@/server/db";
 
 import { formatDate } from "@/lib/utils";
@@ -20,6 +21,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 type ArticlePageProps = {
   params: { slug: string };
 };
+
+export async function generateMetadata({
+  params,
+}: ArticlePageProps): Promise<Metadata> {
+  const post = await getPostById(params.slug);
+
+  if (!post) return notFound();
+
+  return {
+    title: post.title,
+  };
+}
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const session = await auth();
