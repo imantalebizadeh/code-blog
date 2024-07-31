@@ -54,7 +54,7 @@ export default function ArticleSidebar({
 
   return (
     <aside>
-      <div className="fixed inset-x-0 bottom-0 z-10 flex flex-row items-center justify-around gap-8 bg-secondary p-2 md:sticky md:top-10 md:mt-24 md:flex-col md:justify-normal md:border-none md:bg-background md:p-0">
+      <div className="fixed inset-x-0 bottom-0 z-10 flex flex-row items-center justify-around gap-8 bg-secondary p-2 md:sticky md:top-10 md:flex-col md:justify-normal md:border-none md:bg-background md:p-0">
         {/* Comments button */}
         <TooltipProvider>
           <Tooltip delayDuration={150}>
