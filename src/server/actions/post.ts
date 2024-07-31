@@ -139,3 +139,43 @@ export const addBookmark = authAction(
     }
   },
 );
+
+export const createComment = authAction(
+  z.object({
+    comment: z.string(),
+    articleId: z.string(),
+    commentId: z.string().optional(),
+  }),
+  async ({ comment, articleId, commentId }, user) => {
+    try {
+      await prisma.comment.create({
+        data: {
+          postId: articleId,
+          content: comment,
+          authorId: user.id as string,
+          parentId: commentId,
+        },
+      });
+
+      revalidatePath(`/blog/${articleId}`);
+    } catch (error) {
+      console.error(error);
+      throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+    }
+  },
+);
+
+export const deleteComment = action(z.string(), async (commentId) => {
+  try {
+    const res = await prisma.comment.delete({
+      where: {
+        id: commentId,
+      },
+    });
+
+    revalidatePath(`/blog/${res.postId}`);
+  } catch (error) {
+    console.error(error);
+    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
+  }
+});
