@@ -96,8 +96,12 @@ export const getCategoryById = cache(async (id: string) => {
 export const getComments = cache(async (postId: string) => {
   try {
     const comments = await prisma.comment.findMany({
-      where: { postId },
-      include: { author: true },
+      where: { AND: [{ postId }, { parentId: null }] },
+      include: {
+        author: true,
+        children: { include: { author: true } },
+      },
+      orderBy: { createdAt: "desc" },
     });
     return comments;
   } catch (error) {
