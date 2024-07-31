@@ -5,14 +5,14 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { auth } from "@/server/auth";
-import { getBookmark } from "@/server/data/post";
+import { getBookmark, getComments } from "@/server/data/post";
 import prisma from "@/server/db";
 
 import { formatDate } from "@/lib/utils";
 
 import ArticleContent from "@/components/article-content";
 import ArticleSidebar from "@/components/article-sidebar";
-import Comments from "@/components/comments";
+import Comments from "@/components/article/comments";
 import Icon from "@/components/common/icon";
 import MoreArticles from "@/components/more-articles";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,13 +35,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   if (!article) return notFound();
 
+  const articleComments = await getComments(article.id);
+
   const bookmark = await getBookmark({
     articleId: article.id,
     userId: session?.user.id,
   });
 
   return (
-    <div className="mt-10 grid grid-cols-1 grid-rows-[1fr_auto_auto] gap-x-8 gap-y-16 md:grid-cols-[50px_1fr_300px] md:grid-rows-[1fr_auto]">
+    <div className="mt-10 grid grid-cols-1 grid-rows-[1fr_auto_auto] gap-8 md:grid-cols-[50px_1fr_300px] md:grid-rows-[1fr_auto]">
       <ArticleSidebar
         session={session}
         bookmark={bookmark}
@@ -49,7 +51,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       />
 
       <main>
-        <article className="flex flex-col gap-4">
+        <article className="flex flex-col space-y-4 rounded-xl bg-secondary/40 p-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <Icon
@@ -105,7 +107,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               alt="تصویر کاور مقاله"
               width={854}
               height={474}
-              className="w-full rounded-xl border"
+              className="w-full rounded-xl"
               priority
             />
           </div>
@@ -120,14 +122,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </article>
       </main>
 
-      <div className="order-2 mb-0 md:order-none md:mb-5 md:mt-24">
+      <div className="order-2 mb-0 md:order-none md:mb-5">
         <Suspense fallback={<MoreArticlesSkeleton />}>
           <MoreArticles articleId={article.id} />
         </Suspense>
       </div>
 
       <div className="order-1 md:order-none md:col-start-2 md:col-end-3 md:mb-5">
-        <Comments author={article.author} articleId={article.id} />
+        <Comments
+          comments={articleComments}
+          articleId={article.id}
+          session={session}
+        />
       </div>
     </div>
   );
