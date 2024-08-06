@@ -9,7 +9,11 @@ export const env = createEnv({
     S3_ACCESS_KEY: z.string().min(1),
     S3_SECRET_KEY: z.string().min(1),
   },
+  client: {
+    NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
+  },
   runtimeEnv: {
+    NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
     S3_REGION: process.env.S3_REGION,
     S3_BUCKET: process.env.S3_BUCKET,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
