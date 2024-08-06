@@ -3,7 +3,11 @@ import { twMerge } from "tailwind-merge";
 
 import { transliterationMap } from "./constants";
 import { env } from "@/env";
-import type { fetcherOptions } from "@/types";
+import type {
+  BookmarkWithPost,
+  PostWithAuthorAndCategory,
+  fetcherOptions,
+} from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,6 +38,12 @@ export function formatDate(
   date: Date,
 ) {
   return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
+export function isBookmark(
+  data: PostWithAuthorAndCategory | BookmarkWithPost,
+): data is BookmarkWithPost {
+  return (data as BookmarkWithPost).post !== undefined;
 }
 
 export async function fetcher<T>({
