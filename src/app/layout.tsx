@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Footer from "@/components/layout/footer";
 import Navbar from "@/components/layout/navbar";
 import NextauthProvider from "@/components/providers/nextauth-provider";
+import ReactQueryProvider from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ToasterProvider from "@/components/providers/toaster-provider";
 
@@ -52,21 +53,23 @@ export default function RootLayout({
       <body
         className={cn("font-vazirmatn", inter.variable, vazirmatn.variable)}
       >
-        <NextauthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light">
-            <div className="flex min-h-screen w-full flex-col">
-              <Navbar />
+        <ReactQueryProvider>
+          <NextauthProvider>
+            <ThemeProvider attribute="class" defaultTheme="light">
+              <div className="flex min-h-screen w-full flex-col">
+                <Navbar />
 
-              <div className="container grid flex-1 grid-cols-1 grid-rows-1">
-                {children}
+                <div className="container grid flex-1 grid-cols-1 grid-rows-1">
+                  {children}
+                </div>
+
+                <Footer />
               </div>
 
-              <Footer />
-            </div>
-
-            <ToasterProvider />
-          </ThemeProvider>
-        </NextauthProvider>
+              <ToasterProvider />
+            </ThemeProvider>
+          </NextauthProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
