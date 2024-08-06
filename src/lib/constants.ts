@@ -86,3 +86,5 @@ export const editorExtensions: Extensions = [
 
 export const DEFAULT_SERVER_ERROR =
   "خطایی در سمت سرور رخ داده است. لطفا مجددا تلاش کنید.";
+
+export const POSTS_LIMIT = 30;
