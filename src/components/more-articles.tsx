@@ -12,6 +12,7 @@ export default async function MoreArticles({ articleId }: MoreArticlesProps) {
     where: { NOT: { id: articleId } },
     include: { author: true },
     take: 3,
+    orderBy: { createdAt: "desc" },
   });
 
   return (
