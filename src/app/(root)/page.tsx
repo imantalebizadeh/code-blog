@@ -1,13 +1,57 @@
-import { getPosts } from "@/server/data/post";
-import prisma from "@/server/db";
+"use client";
+
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useIntersectionObserver } from "usehooks-ts";
+
+import { cn, fetcher } from "@/lib/utils";
 
 import PostList from "@/components/post-list";
+import PostsSkeleton from "@/components/posts-skeleton";
 
-export default async function Home() {
-  const postsData = getPosts({ limit: 34 });
-  const postsCountData = await prisma.post.count();
+import type { ApiResponse, PostWithAuthorAndCategory } from "@/types";
 
-  const [posts, postsCount] = await Promise.all([postsData, postsCountData]);
+export default function Home() {
+  const { data, error, status, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ["posts"],
+    queryFn: ({ pageParam }) =>
+      fetcher<ApiResponse<PostWithAuthorAndCategory[]>>({
+        endpoint: "posts",
+        searchParams: { pageParam: pageParam.toString() },
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    refetchOnWindowFocus: false,
+  });
 
-  return <PostList InitialPosts={posts} postsCount={postsCount} mode="home" />;
+  const { ref } = useIntersectionObserver({
+    threshold: 0.5,
+    onChange(isIntersecting) {
+      if (isIntersecting) {
+        fetchNextPage();
+      }
+    },
+  });
+
+  return (
+    <div className="flex flex-col items-stretch">
+      {status === "pending" ? (
+        <PostsSkeleton viewMode="home" />
+      ) : status === "error" ? (
+        <p className="text-center text-lg text-destructive">{error.message}</p>
+      ) : (
+        <div className="space-y-10">
+          <PostList data={data} />
+
+          <div
+            ref={ref}
+            className={cn("mx-auto block text-muted-foreground", {
+              hidden: !hasNextPage,
+            })}
+          >
+            در حال بارگذاری...
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
