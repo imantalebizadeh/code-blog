@@ -1,27 +1,33 @@
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { ComponentPropsWithoutRef } from "react";
-
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import Icon from "./common/icon";
 import PostActions from "./post-actions";
 import { Avatar, AvatarImage } from "./ui/avatar";
-import { BlogPost } from "@/types";
+import type { PostWithAuthorAndCategory } from "@/types";
 
 type Props = {
-  post: BlogPost;
-  mode: "profile" | "home";
+  post: PostWithAuthorAndCategory;
+  viewMode: "profile" | "home";
 };
 
-export default function PostItem({ post, mode }: Props) {
+export default function PostItem({ post, viewMode }: Props) {
+  const pathname = usePathname();
+
   return (
-    <Card className="space-y-4 border-none bg-transparent p-0 shadow-none">
+    <Card
+      className={cn("space-y-4 border-none bg-transparent p-0 shadow-none", {
+        "bg-background/70 p-4":
+          pathname === "/profile/blogs" || pathname === "/profile/saved-posts",
+      })}
+    >
       <CardContent className="flex flex-col gap-4 p-0">
-        <div className="relative overflow-hidden rounded-md">
+        <div className="relative overflow-hidden rounded-md border">
           <Link href={`/blog/${post.id}`}>
             <Image
               src={post.cover_image}
@@ -33,7 +39,7 @@ export default function PostItem({ post, mode }: Props) {
             />
           </Link>
 
-          {mode === "profile" && (
+          {viewMode === "profile" && pathname === "/profile/blogs" && (
             <PostActions postId={post.id} className="absolute left-2 top-2" />
           )}
         </div>
@@ -61,7 +67,7 @@ export default function PostItem({ post, mode }: Props) {
         </div>
       </CardContent>
 
-      {mode === "home" && (
+      {viewMode === "home" && (
         <CardFooter className="p-0">
           <div className="flex gap-2">
             <Avatar>
@@ -79,7 +85,7 @@ export default function PostItem({ post, mode }: Props) {
                 {formatDate(
                   "fa-IR",
                   { year: "numeric", month: "numeric", day: "numeric" },
-                  post.createdAt,
+                  new Date(post.createdAt),
                 )}
               </p>
             </div>
