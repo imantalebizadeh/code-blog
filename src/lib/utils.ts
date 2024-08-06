@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import { transliterationMap } from "./constants";
+import { env } from "@/env";
+import type { fetcherOptions } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -32,4 +34,32 @@ export function formatDate(
   date: Date,
 ) {
   return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
+export async function fetcher<T>({
+  endpoint,
+  searchParams,
+  segments,
+}: fetcherOptions): Promise<T> {
+  const BASE_URL =
+    env.NEXT_PUBLIC_NODE_ENV === "development" ? "http://localhost:3000" : "";
+  const url = new URL(`/api/${endpoint}`, BASE_URL);
+  if (searchParams) {
+    Object.entries(searchParams).forEach(([key, value]) => {
+      url.searchParams.append(key, value);
+    });
+  }
+  if (segments) {
+    segments.forEach((segment) => {
+      url.pathname += `/${segment}`;
+    });
+  }
+
+  const response = await fetch(url.toString());
+
+  if (!response.ok) {
+    throw new Error("خطای در سمت سرور رخ داده است, لطفا مجددا تلاش کنید");
+  }
+
+  return response.json();
 }
