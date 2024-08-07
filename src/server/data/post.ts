@@ -1,16 +1,13 @@
 import { cache } from "react";
 
 import prisma from "../db";
-import { Bookmark } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
-type getPostsParams = {
-  limit?: number;
-  skip?: number;
-  filter?: {
-    category?: string;
-    search?: string;
-  };
-};
+export const getPostsData = async (args: Prisma.PostFindManyArgs) =>
+  await prisma.post.findMany(args);
+
+export const getPostsCount = async (args: Prisma.PostCountArgs) =>
+  await prisma.post.count(args);
 
 export const getAuthorById = cache(async (id: string) => {
   const author = await prisma.user.findUnique({
@@ -18,49 +15,6 @@ export const getAuthorById = cache(async (id: string) => {
   });
 
   return author;
-});
-
-export const getPosts = cache(async (params: getPostsParams) => {
-  const { limit, skip, filter } = params;
-
-  let posts;
-
-  try {
-    if (filter?.search || filter?.category) {
-      posts = await prisma.post.findMany({
-        where: {
-          OR: [
-            {
-              category: {
-                name: filter?.category,
-              },
-            },
-            {
-              title: {
-                contains: filter?.search,
-              },
-            },
-          ],
-        },
-        take: limit,
-        skip,
-        orderBy: { createdAt: "desc" },
-        include: { author: true, category: true },
-      });
-    } else {
-      posts = await prisma.post.findMany({
-        take: limit,
-        skip,
-        orderBy: { createdAt: "desc" },
-        include: { author: true, category: true },
-      });
-    }
-
-    return posts;
-  } catch (error) {
-    console.error(error);
-    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
-  }
 });
 
 export const getPostById = cache(async (postId: string) => {
