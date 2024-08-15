@@ -769,8 +769,8 @@ export default function HeroImage({ className }: Props) {
           y2="796.7"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_46_7741"
@@ -780,8 +780,8 @@ export default function HeroImage({ className }: Props) {
           y2="788.851"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_46_7741"
@@ -791,8 +791,8 @@ export default function HeroImage({ className }: Props) {
           y2="412.186"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_46_7741"
@@ -802,8 +802,8 @@ export default function HeroImage({ className }: Props) {
           y2="394.377"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_46_7741"
@@ -813,8 +813,8 @@ export default function HeroImage({ className }: Props) {
           y2="907.047"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint5_linear_46_7741"
@@ -824,8 +824,8 @@ export default function HeroImage({ className }: Props) {
           y2="790.702"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint6_linear_46_7741"
@@ -835,8 +835,8 @@ export default function HeroImage({ className }: Props) {
           y2="766.138"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint7_linear_46_7741"
@@ -846,8 +846,8 @@ export default function HeroImage({ className }: Props) {
           y2="483.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint8_linear_46_7741"
@@ -857,8 +857,8 @@ export default function HeroImage({ className }: Props) {
           y2="484.306"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint9_linear_46_7741"
@@ -868,8 +868,8 @@ export default function HeroImage({ className }: Props) {
           y2="243.04"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint10_linear_46_7741"
@@ -879,8 +879,8 @@ export default function HeroImage({ className }: Props) {
           y2="245.16"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint11_linear_46_7741"
@@ -890,8 +890,8 @@ export default function HeroImage({ className }: Props) {
           y2="323.151"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint12_linear_46_7741"
@@ -901,8 +901,8 @@ export default function HeroImage({ className }: Props) {
           y2="330.288"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint13_linear_46_7741"
@@ -912,8 +912,8 @@ export default function HeroImage({ className }: Props) {
           y2="316.646"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint14_linear_46_7741"
@@ -923,8 +923,8 @@ export default function HeroImage({ className }: Props) {
           y2="318.3"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint15_linear_46_7741"
@@ -934,8 +934,8 @@ export default function HeroImage({ className }: Props) {
           y2="685.393"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint16_linear_46_7741"
@@ -945,8 +945,8 @@ export default function HeroImage({ className }: Props) {
           y2="667.977"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint17_linear_46_7741"
@@ -956,8 +956,8 @@ export default function HeroImage({ className }: Props) {
           y2="551.575"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint18_linear_46_7741"
@@ -967,8 +967,8 @@ export default function HeroImage({ className }: Props) {
           y2="601.279"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint19_linear_46_7741"
@@ -978,8 +978,8 @@ export default function HeroImage({ className }: Props) {
           y2="510.79"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint20_linear_46_7741"
@@ -989,8 +989,8 @@ export default function HeroImage({ className }: Props) {
           y2="467.035"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint21_linear_46_7741"
@@ -1000,8 +1000,8 @@ export default function HeroImage({ className }: Props) {
           y2="483.602"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint22_linear_46_7741"
@@ -1011,8 +1011,8 @@ export default function HeroImage({ className }: Props) {
           y2="500.596"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <linearGradient
           id="paint23_linear_46_7741"
@@ -1022,8 +1022,8 @@ export default function HeroImage({ className }: Props) {
           y2="918.734"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#D89EFF" />
-          <stop offset="1" stopColor="#8238E0" />
+          <stop stopColor="#4A9FFF" />
+          <stop offset="1" stopColor="#2A67F7" />
         </linearGradient>
         <clipPath id="clip0_46_7741">
           <rect width="960" height="960" fill="white" />
