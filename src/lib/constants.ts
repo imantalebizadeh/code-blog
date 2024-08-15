@@ -12,8 +12,8 @@ import { NavItem } from "@/types";
 
 export const navLinks: NavItem[] = [
   {
-    title: "همه مقالات",
-    href: "/posts",
+    title: "صفحه اصلی",
+    href: "/",
   },
   {
     title: "درباره ما",
