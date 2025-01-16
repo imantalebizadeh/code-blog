@@ -1,13 +1,8 @@
-import createJiti from "jiti";
-import { fileURLToPath } from "node:url";
+import type { NextConfig } from "next";
 
-const jiti = createJiti(fileURLToPath(import.meta.url));
+import "./src/env";
 
-// Import env here to validate during build. Using jiti we can import .ts files :)
-jiti("./src/env");
-
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
