@@ -1,5 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 
 export const env = createEnv({
   shared: {
@@ -14,4 +14,5 @@ export const env = createEnv({
   },
   experimental__runtimeEnv: process.env,
   isServer: typeof window === "undefined",
+  emptyStringAsUndefined: true,
 });
