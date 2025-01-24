@@ -84,7 +84,19 @@ export const editorExtensions: Extensions = [
   Underline,
 ];
 
-export const DEFAULT_SERVER_ERROR =
-  "خطایی در سمت سرور رخ داده است. لطفا مجددا تلاش کنید.";
+export const SERVER_ERROR_MESSAGE = "خطایی در سمت سرور رخ داده است.";
 
 export const POSTS_LIMIT = 30;
+
+// File upload constants
+export const MAX_FILE_SIZE = 3000000;
+export const ACCEPTED_FILE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+] as const;
+
+export const UPLOAD_TYPE = {
+  AVATAR: "AVATAR",
+  POST: "POST",
+} as const;
