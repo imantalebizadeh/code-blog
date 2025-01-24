@@ -1,22 +1,24 @@
+import { Role, UserStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const userSchema = z.object({
-  name: z
-    .string({ required_error: "وارد کردن نام و نام خانوادگی الزامی می باشد" })
-    .min(1, "وارد کردن نام و نام خانوادگی الزامی می باشد"),
-  email: z
-    .string({ required_error: "وارد کردن ایمیل الزامی می باشد" })
-    .min(1, "وارد کردن ایمیل الزامی می باشد")
-    .email("لطفا یک ایمیل معتبر وارد کنید"),
-  username: z
-    .string({ required_error: "وارد کردن نام کاربری الزامی است" })
-    .min(3, "نام کاربری حداقل باید 3 کاراکتر باشد")
-    .max(50, "نام کاربری حداکثر باید 50 کاراکتر باشد")
-    .regex(
-      /^[a-z0-9_-]{3,50}$/g,
-      "نام کاربری باید شامل حروف a تا z, اعداد,- و _ باشد",
-    ),
-  bio: z.string().max(500, "بیوگرافی حدااکثر باید 500 کاراکتر باشد").optional(),
+  name: z.string().nullable(),
+  id: z.string(),
+  email: z.string(),
+  emailVerified: z.date().nullable(),
+  image: z.string().nullable(),
+  username: z.string(),
+  password: z.string().nullable(),
+  lastLoginAt: z.date().nullable(),
+  role: z.enum([Role.ADMIN, Role.USER]),
+  status: z.enum([
+    UserStatus.ACTIVE,
+    UserStatus.INACTIVE,
+    UserStatus.SUSPENDED,
+  ]),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  isDeleted: z.boolean(),
 });
 
 export const passwordFormSchema = z
