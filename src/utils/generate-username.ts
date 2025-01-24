@@ -1,5 +1,5 @@
 import { transliterationMap } from "@/lib/constants";
-import { prisma } from "@/server/db";
+import { prisma } from "@/server/prisma";
 
 interface UsernameOptions {
   isPersian?: boolean;
