@@ -1,52 +1,75 @@
 "use server";
 
-import { AuthError } from "next-auth";
-
-import { nextAuthSignIn } from "../auth";
-import prisma from "../db";
 import { hash } from "bcryptjs";
+import { CredentialsSignin } from "next-auth";
+import { z } from "zod";
+import { zfd } from "zod-form-data";
 
-import { action } from "@/lib/action.client";
-import { generateUniqueUsername } from "@/lib/utils";
-import { signInSchema, signUpSchema } from "@/lib/validations/auth";
+import { SERVER_ERROR_MESSAGE } from "@/lib/constants";
+import { publicActionClient } from "@/lib/safe-action";
+import { signupActionSchema } from "@/lib/schemas/auth";
+import { generateUsername } from "@/utils/generate-username";
 
-export const signIn = action(signInSchema, async ({ email, password }) => {
-  try {
-    await nextAuthSignIn("credentials", {
-      email,
-      password,
-      redirectTo: "/",
-    });
-  } catch (err) {
-    if (err instanceof AuthError) {
-      switch (err.type) {
-        case "CredentialsSignin":
-          return { error: "ایمیل یا رمز عبور اشتباه است" };
+import { signIn } from "../auth";
+import prisma from "../prisma";
 
-        default:
-          return { error: "خطای نامشخص, لطفا مجددا تلاش کنید" };
-      }
-    }
+export const signInWithGoogleAction = publicActionClient
+  .bindArgsSchemas<
+    [redirectTo: z.ZodOptional<z.ZodString>]
+  >([z.string().optional()])
+  .action(async ({ bindArgsParsedInputs }) => {
+    const [redirectTo = "/"] = bindArgsParsedInputs;
 
-    throw err;
-  }
-});
+    await signIn("google", { redirectTo });
+  });
 
-export const signUp = action(
-  signUpSchema,
-  async ({ name, email, password }) => {
-    const userExists = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (userExists) return { error: "این ایمیل قبلا ثبت شده است" };
+export const signInWithCredentialsAction = publicActionClient
+  .schema(
+    zfd.formData({
+      email: zfd.text(z.string().email()),
+      password: zfd.text(z.string().min(8)),
+    }),
+  )
+  .bindArgsSchemas<[redirectTo: z.ZodOptional<z.ZodString>]>([
+    z.string().optional(),
+  ])
+  .stateAction(async ({ parsedInput, bindArgsParsedInputs }) => {
+    const { email, password } = parsedInput;
+    const [redirectTo = "/"] = bindArgsParsedInputs;
 
     try {
-      const passwordHash = await hash(password, 10);
-      const username = generateUniqueUsername(name);
+      await signIn("credentials", { email, password, redirectTo });
+      return { error: "" };
+    } catch (error) {
+      if (error instanceof CredentialsSignin)
+        return { error: "ایمیل یا رمز عبور اشتباه است" };
+      throw error;
+    }
+  });
 
+export const signupAction = publicActionClient
+  .schema(signupActionSchema)
+  .bindArgsSchemas<[redirectTo: z.ZodOptional<z.ZodString>]>([
+    z.string().optional(),
+  ])
+  .action(
+    async ({ parsedInput }) => {
+      const { email, password, name } = parsedInput;
+
+      // check if user already exists
+      const userExists = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      // if user already exists, throw error
+      if (userExists) throw new Error("این ایمیل قبلا ثبت شده است");
+
+      // hash password
+      const passwordHash = await hash(password, 10);
+      // generate unique username
+      const username = await generateUsername(name);
+
+      // create user
       await prisma.user.create({
         data: {
           name,
@@ -56,15 +79,20 @@ export const signUp = action(
           password: passwordHash,
         },
       });
-    } catch (error) {
-      console.error(error);
-      return { error: "خطای نامشخص, لطفا مجددا تلاش کنید" };
-    }
 
-    await signIn({ email, password });
-  },
-);
-
-export const githubSignIn = async () => {
-  await nextAuthSignIn("github", { redirectTo: "/" });
-};
+      return { email, password };
+    },
+    {
+      async onError() {
+        // TODO: Log error to sentry
+        throw new Error(SERVER_ERROR_MESSAGE);
+      },
+      async onSuccess({ data, bindArgsParsedInputs }) {
+        if (data) {
+          const { email, password } = data;
+          const [redirectTo = "/"] = bindArgsParsedInputs;
+          await signIn("credentials", { email, password, redirectTo });
+        }
+      },
+    },
+  );
