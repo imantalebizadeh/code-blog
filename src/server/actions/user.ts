@@ -2,93 +2,37 @@
 
 import { revalidatePath } from "next/cache";
 
-import { auth } from "../auth";
-import { getUserByUsername } from "../data/user";
-import prisma from "../db";
-import { compare, hash } from "bcryptjs";
-import { z } from "zod";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { hash } from "bcryptjs";
 
-import { action, authAction } from "@/lib/action.client";
-import { userSchema } from "@/lib/validations/user";
+import { SERVER_ERROR_MESSAGE } from "@/lib/constants";
+import { authenticatedActionClient } from "@/lib/safe-action";
+import { userSchema } from "@/lib/schemas/user.schema";
 
-const imageSchema = z.string().url();
+import prisma from "../prisma";
 
-//Check this action
-export const updateUserImage = action(imageSchema, async (image) => {
-  const session = await auth();
-
-  await prisma.user.update({
-    where: { username: session?.user.username },
-    data: { image },
-  });
-
-  revalidatePath("/profile");
-});
-
-export const updateUser = action(
-  userSchema,
-  async ({ name, email, username, bio }) => {
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: { username: true },
-    });
-
-    if (user && user.username !== username) {
-      const userExistByUsername = await prisma.user.findUnique({
-        where: { username },
-        select: { username: true },
+export const updateUser = authenticatedActionClient
+  .schema(userSchema.partial())
+  .action(async ({ parsedInput: userData, ctx: { user } }) => {
+    // Check if the username is already taken
+    try {
+      await prisma.user.update({
+        where: { username: user.username },
+        data: {
+          ...userData,
+          password: userData.password && (await hash(userData.password, 10)),
+        },
       });
 
-      if (userExistByUsername) {
+      revalidatePath("/profile");
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
         throw new Error("این نام کاربری قبلا ثبت شده است");
+      } else {
+        throw new Error(SERVER_ERROR_MESSAGE);
       }
     }
-
-    await prisma.user.update({
-      where: { email },
-      data: {
-        name,
-        email,
-        username,
-        bio,
-      },
-    });
-
-    revalidatePath("/profile");
-  },
-);
-
-export const updateUserPassword = authAction(
-  z.object({ currentPassword: z.string(), newPassword: z.string() }),
-  async ({ currentPassword, newPassword }, { username }) => {
-    const user = await getUserByUsername(username);
-
-    if (!user) {
-      throw new Error("کاربر یافت نشد");
-    }
-
-    if (!user.password) {
-      const passwordHash = await hash(newPassword, 10);
-
-      await prisma.user.update({
-        where: { username },
-        data: { password: passwordHash },
-      });
-    } else {
-      const passwordMatch = await compare(currentPassword, user.password);
-
-      if (!passwordMatch) {
-        throw new Error("رمز عبور وارد شده اشتباه است");
-      }
-
-      const passwordHash = await hash(newPassword, 10);
-
-      await prisma.user.update({
-        where: { username },
-        data: { password: passwordHash },
-      });
-    }
-
-    revalidatePath("/profile");
-  },
-);
+  });
