@@ -2,180 +2,120 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getBookmark, getPosts } from "../data/post";
-import prisma from "../db";
 import { z } from "zod";
 
-import { action, authAction } from "@/lib/action.client";
-import { postFormSchema } from "@/lib/validations/post";
+import { authenticatedActionClient } from "@/lib/safe-action";
+import {
+  createCommentSchema,
+  createPostSchema,
+  deleteCommentSchema,
+  togglePostBookmarkSchema,
+  updatePostSchema,
+} from "@/lib/schemas/post.schema";
 
-const editSchema = postFormSchema.extend({
-  postId: z.string(),
-});
+import prisma from "../prisma";
 
-type fetchPostsParams = {
-  limit: number;
-  skip: number;
-  filter?: {
-    category?: string;
-    search?: string;
-  };
-};
+export const createPost = authenticatedActionClient
+  .schema(createPostSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    const { categoryId, ...postData } = parsedInput;
 
-//** Use this function to receive the data of posts on the client side, so that sensitive and important data can be prevented from being stolen on the client side by running this function on the server side.
-export const fetchPosts = async (params: fetchPostsParams) => {
-  return await getPosts(params);
-};
-
-export const createPost = authAction(postFormSchema, async (values, user) => {
-  const { title, content, summary, category, image } = values;
-
-  try {
     await prisma.post.create({
       data: {
-        title,
-        content,
-        summary,
-        cover_image: image as string,
-        published: true,
-        author: {
-          connect: {
-            id: user.id,
-          },
-        },
-        category: {
-          connect: {
-            id: category,
-          },
-        },
+        ...postData,
+        author: { connect: { id: user.id } },
+        category: { connect: { id: categoryId } },
       },
     });
 
     revalidatePath("/profile/blogs");
-  } catch (error) {
-    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
-  }
-});
+  });
 
-export const removePost = action(
-  z.object({ postId: z.string() }),
-  async ({ postId }) => {
-    try {
-      await prisma.post.delete({
-        where: {
-          id: postId,
-        },
-      });
+export const deletePost = authenticatedActionClient
+  .schema(z.object({ postId: z.string() }))
+  .action(async ({ parsedInput: { postId }, ctx: { user } }) => {
+    await prisma.post.delete({ where: { id: postId, authorId: user.id } });
 
-      revalidatePath("/profile/blogs");
-    } catch (error) {
-      console.error(error);
-      throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
-    }
-  },
-);
+    revalidatePath("/profile/blogs");
+  });
 
-export const editPost = action(editSchema, async (values) => {
-  const { postId, title, content, summary, category, image } = values;
+export const updatePost = authenticatedActionClient
+  .schema(updatePostSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    const { id, categoryId, ...postData } = parsedInput;
 
-  try {
     await prisma.post.update({
-      where: {
-        id: postId,
-      },
+      where: { id, authorId: user.id },
       data: {
-        title,
-        content,
-        summary,
-        cover_image: image as string,
-        category: { connect: { id: category } },
+        ...postData,
+        category: { connect: { id: categoryId } },
       },
     });
 
     revalidatePath("/profile/blogs");
-  } catch (error) {
-    console.error(error);
-    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
-  }
-});
+  });
 
-export const addBookmark = authAction(
-  z.object({ articleId: z.string() }),
-  async ({ articleId }, user) => {
-    try {
-      const bookmark = await getBookmark({
-        articleId,
-        userId: user.id,
+export const togglePostBookmark = authenticatedActionClient
+  .schema(togglePostBookmarkSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    const { postId, postSlug } = parsedInput;
+
+    return await prisma.$transaction(async (tx) => {
+      const bookmark = await tx.bookmark.findFirst({
+        where: { AND: { postId, userId: user.id } },
       });
 
       if (bookmark) {
-        await prisma.bookmark.delete({
+        await tx.bookmark.delete({
           where: {
-            bookmarks_pkey: {
+            bookmarks_pky: {
               postId: bookmark.postId,
               userId: bookmark.userId,
             },
           },
         });
 
-        revalidatePath(`/blog/${articleId}`);
-
+        revalidatePath(`/blog/${postSlug}`);
         return { bookmarked: false };
-      } else {
-        await prisma.bookmark.create({
-          data: {
-            postId: articleId,
-            userId: user.id!,
-          },
-        });
-
-        revalidatePath(`/blog/${articleId}`);
-
-        return { bookmarked: true };
       }
-    } catch (error) {
-      console.error(error);
-      throw new Error("خطای , لطفا مجددا تلاش کنید");
-    }
-  },
-);
 
-export const createComment = authAction(
-  z.object({
-    comment: z.string(),
-    articleId: z.string(),
-    commentId: z.string().optional(),
-  }),
-  async ({ comment, articleId, commentId }, user) => {
-    try {
-      await prisma.comment.create({
-        data: {
-          postId: articleId,
-          content: comment,
-          authorId: user.id as string,
-          parentId: commentId,
-        },
+      await tx.bookmark.create({
+        data: { postId, userId: user.id! },
       });
 
-      revalidatePath(`/blog/${articleId}`);
-    } catch (error) {
-      console.error(error);
-      throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
-    }
-  },
-);
+      revalidatePath(`/blog/${postSlug}`);
+      return { bookmarked: true };
+    });
+  });
 
-export const deleteComment = action(z.string(), async (commentId) => {
-  try {
-    const res = await prisma.comment.delete({
-      where: {
-        id: commentId,
+export const createComment = authenticatedActionClient
+  .schema(createCommentSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    const { content, parentId, postId, postSlug } = parsedInput;
+
+    await prisma.comment.create({
+      data: {
+        postId,
+        content: content,
+        authorId: user.id as string,
+        parentId,
       },
     });
 
-    revalidatePath(`/blog/${res.postId}`);
-  } catch (error) {
-    console.error(error);
-    throw new Error("خطای نامشخص, لطفا مجددا تلاش کنید");
-  }
-});
+    revalidatePath(`/blog/${postSlug}`);
+  });
+
+export const deleteComment = authenticatedActionClient
+  .schema(deleteCommentSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    const { id, postSlug } = parsedInput;
+
+    await prisma.comment.delete({
+      where: {
+        id,
+        authorId: user.id,
+      },
+    });
+
+    revalidatePath(`/blog/${postSlug}`);
+  });
