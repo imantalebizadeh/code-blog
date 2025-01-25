@@ -8,7 +8,8 @@ export const env = createEnv({
   server: {
     S3_REGION: z.string().min(1),
     S3_BUCKET: z.string().min(1),
-    S3_ENDPOINT: z.string().min(1),
+    S3_PUBLIC_URL: z.string().url(),
+    S3_ENDPOINT: z.string().url(),
     S3_ACCESS_KEY: z.string().min(1),
     S3_SECRET_KEY: z.string().min(1),
   },
