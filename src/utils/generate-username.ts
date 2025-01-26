@@ -1,5 +1,5 @@
 import { transliterationMap } from "@/lib/constants";
-import { prisma } from "@/server/prisma";
+import prisma from "@/server/prisma";
 
 interface UsernameOptions {
   isPersian?: boolean;
@@ -72,12 +72,15 @@ export async function generateUsername(
   name: string,
   options: UsernameOptions = {},
   maxAttempts = 3,
-): Promise<string> {
-  for (let i = 0; i < maxAttempts; i++) {
-    const username = generateUniqueUsername(name, options);
-    if (await isUsernameUnique(username)) {
-      return username;
+): Promise<string | undefined> {
+  try {
+    for (let i = 0; i < maxAttempts; i++) {
+      const username = generateUniqueUsername(name, options);
+      if (await isUsernameUnique(username)) {
+        return username;
+      }
     }
+  } catch {
+    throw new Error("Unable to generate a unique username. Please try again.");
   }
-  throw new Error("Unable to generate a unique username. Please try again.");
 }
