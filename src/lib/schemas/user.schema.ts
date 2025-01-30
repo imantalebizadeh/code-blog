@@ -1,4 +1,4 @@
-import { Role, UserStatus } from "@prisma/client";
+import { UserStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const userSchema = z.object({
@@ -10,12 +10,7 @@ export const userSchema = z.object({
   username: z.string(),
   password: z.string().nullable(),
   lastLoginAt: z.date().nullable(),
-  role: z.enum([Role.ADMIN, Role.USER]),
-  status: z.enum([
-    UserStatus.ACTIVE,
-    UserStatus.INACTIVE,
-    UserStatus.SUSPENDED,
-  ]),
+  status: z.nativeEnum(UserStatus),
   createdAt: z.date(),
   updatedAt: z.date(),
   isDeleted: z.boolean(),
