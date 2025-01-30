@@ -59,7 +59,7 @@ async function isUsernameUnique(username: string): Promise<boolean> {
     where: { username },
   });
 
-  return !!user;
+  return user ? false : true;
 }
 
 // Helper function to detect Persian characters
