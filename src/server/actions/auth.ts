@@ -3,39 +3,29 @@
 import { hash } from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
 import { z } from "zod";
-import { zfd } from "zod-form-data";
 
 import { SERVER_ERROR_MESSAGE } from "@/lib/constants";
 import { publicActionClient } from "@/lib/safe-action";
-import { signupActionSchema } from "@/lib/schemas/auth";
+import { signInFormSchema, signupActionSchema } from "@/lib/schemas/auth";
 import { generateUsername } from "@/utils/generate-username";
 
 import { signIn } from "../auth";
 import prisma from "../prisma";
 
 export const signInWithGoogleAction = publicActionClient
-  .bindArgsSchemas<
-    [redirectTo: z.ZodOptional<z.ZodString>]
-  >([z.string().optional()])
+  .bindArgsSchemas<[redirectTo: z.ZodString]>([z.string()])
   .action(async ({ bindArgsParsedInputs }) => {
-    const [redirectTo = "/"] = bindArgsParsedInputs;
+    const [redirectTo] = bindArgsParsedInputs;
 
     await signIn("google", { redirectTo });
   });
 
 export const signInWithCredentialsAction = publicActionClient
-  .schema(
-    zfd.formData({
-      email: zfd.text(z.string().email()),
-      password: zfd.text(z.string().min(8)),
-    }),
-  )
-  .bindArgsSchemas<[redirectTo: z.ZodOptional<z.ZodString>]>([
-    z.string().optional(),
-  ])
-  .stateAction(async ({ parsedInput, bindArgsParsedInputs }) => {
+  .schema(signInFormSchema)
+  .bindArgsSchemas<[redirectTo: z.ZodString]>([z.string()])
+  .action(async ({ parsedInput, bindArgsParsedInputs }) => {
     const { email, password } = parsedInput;
-    const [redirectTo = "/"] = bindArgsParsedInputs;
+    const [redirectTo] = bindArgsParsedInputs;
 
     try {
       await signIn("credentials", { email, password, redirectTo });
@@ -49,9 +39,7 @@ export const signInWithCredentialsAction = publicActionClient
 
 export const signupAction = publicActionClient
   .schema(signupActionSchema)
-  .bindArgsSchemas<[redirectTo: z.ZodOptional<z.ZodString>]>([
-    z.string().optional(),
-  ])
+  .bindArgsSchemas<[redirectTo: z.ZodString]>([z.string()])
   .action(
     async ({ parsedInput }) => {
       const { email, password, name } = parsedInput;
@@ -69,28 +57,32 @@ export const signupAction = publicActionClient
       // generate unique username
       const username = await generateUsername(name);
 
-      // create user
-      await prisma.user.create({
-        data: {
-          name,
-          username,
-          email,
-          image: "/assets/user-avatar.png",
-          password: passwordHash,
-        },
-      });
+      if (username) {
+        // create user
+        await prisma.user.create({
+          data: {
+            name,
+            username,
+            email,
+            image: "/assets/user-avatar.png",
+            password: passwordHash,
+          },
+        });
 
-      return { email, password };
+        return { email, password };
+      }
     },
     {
-      async onError() {
+      async onError(error) {
         // TODO: Log error to sentry
+        console.log(error);
+
         throw new Error(SERVER_ERROR_MESSAGE);
       },
       async onSuccess({ data, bindArgsParsedInputs }) {
         if (data) {
           const { email, password } = data;
-          const [redirectTo = "/"] = bindArgsParsedInputs;
+          const [redirectTo] = bindArgsParsedInputs;
           await signIn("credentials", { email, password, redirectTo });
         }
       },
