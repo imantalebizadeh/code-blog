@@ -1,11 +1,18 @@
-import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
-import authConfig from "./config/auth.config";
+import NextAuth from "next-auth";
+
+import authConfig from "@/server/auth/config";
 
 const { auth } = NextAuth(authConfig);
 
-export const authRoutes: readonly string[] = ["/login", "/sign-up"];
+export const authRoutes: string[] = ["/sign-in", "/sign-up"];
+
+export const protectedRoutes: string[] = [
+  "/profile/:path*",
+  "/edit/:path*",
+  "/create",
+];
 
 export default auth((req) => {
   const { nextUrl } = req;
@@ -13,13 +20,17 @@ export default auth((req) => {
 
   if (!isLoggedIn && authRoutes.includes(nextUrl.pathname)) return;
 
-  if (isLoggedIn && nextUrl.pathname.startsWith("/profile")) {
-    return;
-  }
+  if (isLoggedIn && protectedRoutes.includes(nextUrl.pathname)) return;
 
   return NextResponse.redirect(new URL("/", nextUrl));
 });
 
 export const config = {
-  matcher: ["/login", "/sign-up", "/profile/:path*"],
+  matcher: [
+    "/sign-in",
+    "/sign-up",
+    "/profile/:path*",
+    "/create",
+    "/edit/:path*",
+  ],
 };
