@@ -12,10 +12,10 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
-        hostname: "avatars.githubusercontent.com",
+        hostname: "lh3.googleusercontent.com",
         protocol: "https",
         port: "",
-        pathname: "/u/**",
+        pathname: "/a/**",
       },
     ],
   },
